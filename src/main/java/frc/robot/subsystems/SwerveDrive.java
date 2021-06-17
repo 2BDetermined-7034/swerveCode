@@ -112,24 +112,6 @@ public class SwerveDrive extends SubsystemBase {
     double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
     double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
 
-    /*
-
-    please help me I need to round the decimal and I am in pain
-
-    DecimalFormat df = new DecimalFormat("###.###");
-
-    String ffl = df.format(fl);
-    String ffr = df.format(fl);
-    String fbl = df.format(fl);
-    String fbr = df.format(fl);
-
-    SmartDashboard.putNumber("Analog number FL", Integer.valueOf(ffl) );
-    SmartDashboard.putNumber("Analog number FR",  Integer.valueOf(ffr) );
-    SmartDashboard.putNumber("Analog number BL",  Integer.valueOf(fbl) );
-    SmartDashboard.putNumber("Analog number BR",  Integer.valueOf(fbr) );
-
-    */
-
 
     double cfl = frontRight.correct(0.012);
     double cfr = frontRight.correct(0.000);

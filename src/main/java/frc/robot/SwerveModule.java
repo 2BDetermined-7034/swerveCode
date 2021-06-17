@@ -90,8 +90,6 @@ public class SwerveModule {
     public double correct(double cons){
         double start = (spinAnalogEncoder.getVoltage() / 3.3);
 
-
-
         return (start - cons) % 1;
     }
 }
