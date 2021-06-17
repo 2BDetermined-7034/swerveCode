@@ -9,6 +9,8 @@
 
 package frc.robot.subsystems;
 
+import java.text.DecimalFormat;
+
 import com.revrobotics.CANAnalog;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -102,10 +104,48 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.setModuleState(states[1]);
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
-    System.out.println("Hi");
+
+
+
+    double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double fr = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
+
+    /*
+
+    please help me I need to round the decimal and I am in pain
+
+    DecimalFormat df = new DecimalFormat("###.###");
+
+    String ffl = df.format(fl);
+    String ffr = df.format(fl);
+    String fbl = df.format(fl);
+    String fbr = df.format(fl);
+
+    SmartDashboard.putNumber("Analog number FL", Integer.valueOf(ffl) );
+    SmartDashboard.putNumber("Analog number FR",  Integer.valueOf(ffr) );
+    SmartDashboard.putNumber("Analog number BL",  Integer.valueOf(fbl) );
+    SmartDashboard.putNumber("Analog number BR",  Integer.valueOf(fbr) );
+
+    */
+
+
+    double cfl = frontRight.correct(0.012);
+    double cfr = frontRight.correct(0.000);
+    double cbl = backLeft.correct(0.014);
+    double cbr = backRight.correct(-0.009);
+
+
+    SmartDashboard.putNumber("Analog number CFL", cfl);
+    SmartDashboard.putNumber("Analog number CFR", cfr);
+    SmartDashboard.putNumber("Analog number CBL", cbl);
+    SmartDashboard.putNumber("Analog number CBR", cbr);
+
+
     /*
     //Jakob I wrote code that works -Sam
-    SmartDashboard.putNumber("Analog number", currentModule.getSpinAnlogEncoder().getVoltage());
+    
     SmartDashboard.putNumber("Analog Position", currentModule.getSpinAnlogEncoder().getPosition());
     SmartDashboard.putNumber("Analog Position 2", currentModule.getSpinAnlogEncoder().getPosition());
     double p = SmartDashboard.getNumber("P Gain", 0);
@@ -133,4 +173,6 @@ public class SwerveDrive extends SubsystemBase {
     currentModule.getSpinPIDController().setReference(button.get() ? upperGoal : lowerGoal, ControlType.kPosition);
     */
   }
+
+
 }

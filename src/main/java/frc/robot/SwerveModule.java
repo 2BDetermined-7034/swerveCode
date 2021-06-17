@@ -84,4 +84,15 @@ public class SwerveModule {
         // TODO Temp
         driveMotor.set(state.speedMetersPerSecond / 6.0);
     }
+
+
+
+    public double correct(double cons){
+        double start = (spinAnalogEncoder.getVoltage() / 3.3);
+
+
+
+        return (start - cons) % 1;
+    }
 }
+
