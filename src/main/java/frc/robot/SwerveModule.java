@@ -44,9 +44,14 @@ public class SwerveModule {
 
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
         spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
+        
+
         // TODO Velocity Conversion Factor
         spinPIDController = spinMotor.getPIDController();
         spinPIDController.setFeedbackDevice(spinAnalogEncoder);
+        
+        
+
     }
 
     public Translation2d getLocation() {
@@ -85,28 +90,36 @@ public class SwerveModule {
 
     // DON'T USE THIS YET. IT ISN'T TESTED.
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
-    public void setModuleState(SwerveModuleState state) {
+    public void setModuleState(SwerveModuleState curState, SwerveModuleState state) {
         if(state.angle.getDegrees() == 0 && state.speedMetersPerSecond == 0) {
             driveMotor.set(0);
             return;
         }
         //if(driveMotor.getDeviceId() != 7) return;
         // Desired angle (in degrees)
-        double angle = state.angle.getDegrees();
-        if(angle < 0) angle += 360;
+        double newAngle = state.angle.getDegrees();
+
+
+        if(newAngle < 0) newAngle += 360;
         //angle = MathUtil.clamp(angle, 30, 330);
-        double rot = angle / 360;
-        boolean invertDrive = false;
-        if(rot < 0.08) {
+        double rot = newAngle / 360; 
+
+        SmartDashboard.putNumber(" rot: ", rot);
+
+        
+        
+        if(rot < 0.8) {
             rot += 0.5;
-            invertDrive = true;
         }
         if(rot > 0.92) {
             rot -= 0.5;
-            invertDrive = true;
         }
-        
+
         spinPIDController.setReference(rot, ControlType.kPosition);
+
+        boolean invertDrive = false; 
+        invertDrive = rot < 0.9;
+
 
         //SmartDashboard.putNumber("SPINNY SPINNY!", state.speedMetersPerSecond);
 
@@ -121,7 +134,28 @@ public class SwerveModule {
         //spinPIDController.setReference(0.30, ControlType.kPosition);
     }
 
+    public double optimize(double currAngle, double newAngle){
 
+        
+
+
+        if(newAngle < 0) newAngle += 360;
+        //angle = MathUtil.clamp(angle, 30, 330);
+        double rot = newAngle / 360; 
+
+        SmartDashboard.putNumber(" rot: ", rot);
+
+        
+        
+        if(rot < 0.8) {
+            rot += 0.5;
+        }
+        if(rot > 0.92) {
+            rot -= 0.5;
+        }
+
+        return newAngle;
+    }
 
     public double correct(double cons) {
         double start = (spinAnalogEncoder.getVoltage() / 3.3);

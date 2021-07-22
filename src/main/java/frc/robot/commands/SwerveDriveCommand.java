@@ -48,7 +48,7 @@ public class SwerveDriveCommand extends CommandBase {
     spin *= Math.PI;
 
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(forward, left, spin));
-    //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 1, 0));
+    //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
   };
 
   // Called once the command ends or is interrupted.
