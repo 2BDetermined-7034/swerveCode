@@ -41,6 +41,13 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDriveKinematics kinematics;
   private ChassisSpeeds speeds;
 
+
+  private final double offsetFL = 0.012; //FL
+  private final double offsetFR = 0.000; //FR
+  private final double offsetBL = 0.014; //BL
+  private final double offsetBR = -0.009; //BR 
+
+
   //private final Joystick joystick;
   //private final JoystickButton button;
 
@@ -55,21 +62,25 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive() {
     double distanceToCenter = 0.18811;
 
-    frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin, new Translation2d(distanceToCenter, distanceToCenter));
-    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, distanceToCenter));
-    backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(distanceToCenter, distanceToCenter));
-    backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(distanceToCenter, distanceToCenter));
+    frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFR);
+    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFL);
+    backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBL);
+    backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBR);
 
     kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
     frontLeft.setSpinPIDConstants(3, 0.003, 0);
     frontLeft.setSpinEncoderInverted(true);
+    frontLeft.setDriveMotorInverted(true);
     frontRight.setSpinPIDConstants(2.3, 0.002, 0);
     frontRight.setSpinEncoderInverted(true);
+    frontRight.setDriveMotorInverted(true);
     backLeft.setSpinPIDConstants(3, 0.003, 0);
     backLeft.setSpinEncoderInverted(true);
+    backLeft.setDriveMotorInverted(true);
     backRight.setSpinPIDConstants(2.3, 0.003, 0);
     backRight.setSpinEncoderInverted(true);
+    backRight.setDriveMotorInverted(true);
 
     speeds = new ChassisSpeeds(0, 0, 0);
 
@@ -106,23 +117,26 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setModuleState(states[3]);
 
 
-
-    double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
-    double fr = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
-    double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
-    double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
-
-
-    double cfl = frontRight.correct(0.012);
-    double cfr = frontRight.correct(0.000);
-    double cbl = backLeft.correct(0.014);
-    double cbr = backRight.correct(-0.009);
+    //double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
+    //double fr = frontLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
+    //double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
+    //double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
 
 
-    SmartDashboard.putNumber("Analog number CFL", cfl);
-    SmartDashboard.putNumber("Analog number CFR", cfr);
-    SmartDashboard.putNumber("Analog number CBL", cbl);
-    SmartDashboard.putNumber("Analog number CBR", cbr);
+    //double cfl = frontRight.correct(offsetFR);
+    //double cfr = frontRight.correct(offsetFL);
+    //double cbl = backLeft.correct(offsetBR);
+    //double cbr = backRight.correct(offsetBL);
+
+    //SmartDashboard.putNumber("Analog number FL", fl);
+    //SmartDashboard.putNumber("Analog number FR", fr);
+    //SmartDashboard.putNumber("Analog number BL", bl);
+    //SmartDashboard.putNumber("Analog number BR", br);
+
+    //SmartDashboard.putNumber("Analog number CFL", cfl);
+    //SmartDashboard.putNumber("Analog number CFR", cfr);
+    //SmartDashboard.putNumber("Analog number CBL", cbl);
+    //SmartDashboard.putNumber("Analog number CBR", cbr);
 
 
     /*
