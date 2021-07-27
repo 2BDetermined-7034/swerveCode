@@ -90,6 +90,7 @@ public class SwerveModule {
             driveMotor.set(0);
             return;
         }
+        /*
         //if(driveMotor.getDeviceId() != 7) return;
         // Desired angle (in degrees)
         double angle = state.angle.getDegrees();
@@ -119,6 +120,7 @@ public class SwerveModule {
         //driveMotor.set(state.speedMetersPerSecond / 6.0);
         driveMotor.set(driveSpeed);
         //spinPIDController.setReference(0.30, ControlType.kPosition);
+        */
     }
 
 

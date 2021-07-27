@@ -117,21 +117,22 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setModuleState(states[3]);
 
 
-    //double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
-    //double fr = frontLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
-    //double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
-    //double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double fl = frontLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double fr = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
+    double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
 
+    /*
+    double cfl = frontRight.correct(offsetFR);
+    double cfr = frontRight.correct(offsetFL);
+    double cbl = backLeft.correct(offsetBR);
+    double cbr = backRight.correct(offsetBL);
+    */
 
-    //double cfl = frontRight.correct(offsetFR);
-    //double cfr = frontRight.correct(offsetFL);
-    //double cbl = backLeft.correct(offsetBR);
-    //double cbr = backRight.correct(offsetBL);
-
-    //SmartDashboard.putNumber("Analog number FL", fl);
-    //SmartDashboard.putNumber("Analog number FR", fr);
-    //SmartDashboard.putNumber("Analog number BL", bl);
-    //SmartDashboard.putNumber("Analog number BR", br);
+    SmartDashboard.putNumber("Analog number FL", fl);
+    SmartDashboard.putNumber("Analog number FR", fr);
+    SmartDashboard.putNumber("Analog number BL", bl);
+    SmartDashboard.putNumber("Analog number BR", br);
 
     //SmartDashboard.putNumber("Analog number CFL", cfl);
     //SmartDashboard.putNumber("Analog number CFR", cfr);
