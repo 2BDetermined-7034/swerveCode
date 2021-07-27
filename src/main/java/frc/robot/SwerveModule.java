@@ -90,12 +90,17 @@ public class SwerveModule {
 
     // DON'T USE THIS YET. IT ISN'T TESTED.
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
+<<<<<<< Updated upstream
     public void setModuleState(SwerveModuleState curState, SwerveModuleState state) {
+=======
+    public void setModuleState(SwerveModuleState curState,SwerveModuleState state) {
+>>>>>>> Stashed changes
         if(state.angle.getDegrees() == 0 && state.speedMetersPerSecond == 0) {
             driveMotor.set(0);
             return;
         }
         //if(driveMotor.getDeviceId() != 7) return;
+<<<<<<< Updated upstream
         // Desired angle (in degrees)
         double newAngle = state.angle.getDegrees();
 
@@ -109,6 +114,22 @@ public class SwerveModule {
         
         
         if(rot < 0.8) {
+=======
+
+        /*
+            ROTATION CONTROL
+                TODO: Fix Rotation jump
+        */
+        
+        SwerveModuleState optimizState = optimize(state, curState.angle.getDegrees());
+        
+        double angle = optimizState.angle.getDegrees();
+        if(angle < 0) angle += 360;
+        double rot = angle / 360;
+
+
+        if(rot < 0.08) {
+>>>>>>> Stashed changes
             rot += 0.5;
         }
         if(rot > 0.92) {
@@ -117,23 +138,26 @@ public class SwerveModule {
 
         spinPIDController.setReference(rot, ControlType.kPosition);
 
+<<<<<<< Updated upstream
         boolean invertDrive = false; 
         invertDrive = rot < 0.9;
 
 
         //SmartDashboard.putNumber("SPINNY SPINNY!", state.speedMetersPerSecond);
+=======
+>>>>>>> Stashed changes
 
-        // TODO Should be done with PID and velocity instead
-        double driveSpeed = state.speedMetersPerSecond;
-        driveSpeed /= 4;
-        if(invertDrive) driveSpeed *= -1;
+        /*
+            SPED CONTROL
+                TODO: Should be done with PID and velocity instead
+        */
 
-        // TODO Temp
-        //driveMotor.set(state.speedMetersPerSecond / 6.0);
+        double driveSpeed = optimizState.speedMetersPerSecond;
         driveMotor.set(driveSpeed);
         //spinPIDController.setReference(0.30, ControlType.kPosition);
     }
 
+<<<<<<< Updated upstream
     public double optimize(double currAngle, double newAngle){
 
         
@@ -157,9 +181,52 @@ public class SwerveModule {
         return newAngle;
     }
 
+=======
+>>>>>>> Stashed changes
     public double correct(double cons) {
         double start = (spinAnalogEncoder.getVoltage() / 3.3);
         return (start - cons) % 1;
     }
+
+
+  public SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
+    double targetAngle = placeInAppropriate0To360Scope(currentAngle, desiredState.angle.getDegrees());
+    double targetSpeed = desiredState.speedMetersPerSecond;
+    double delta = targetAngle - currentAngle;
+    targetSpeed /= 4;
+    if (Math.abs(delta) > 90){
+        targetSpeed *= -1;
+        targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+    }        
+    return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+  }
+
+
+    private double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
+      double lowerBound;
+      double upperBound;
+      double lowerOffset = scopeReference % 360;
+      if (lowerOffset >= 0) {
+          lowerBound = scopeReference - lowerOffset;
+          upperBound = scopeReference + (360 - lowerOffset);
+      } else {
+          upperBound = scopeReference - lowerOffset;
+          lowerBound = scopeReference - (360 + lowerOffset);
+      }
+      while (newAngle < lowerBound) {
+          newAngle += 360;
+      }
+      while (newAngle > upperBound) {
+          newAngle -= 360;
+      }
+      if (newAngle - scopeReference > 180) {
+          newAngle -= 360;
+      } else if (newAngle - scopeReference < -180) {
+          newAngle += 360;
+      }
+      return newAngle;
+  }
+
+
 }
 

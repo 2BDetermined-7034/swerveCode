@@ -42,6 +42,7 @@ public class SwerveDrive extends SubsystemBase {
 
   private ChassisSpeeds curSpeeds;
   private ChassisSpeeds speeds;
+  private ChassisSpeeds curSpeeds;
 
 
   private final double offsetFL = 0.012; //FL
@@ -113,13 +114,17 @@ public class SwerveDrive extends SubsystemBase {
     curSpeeds = this.speeds;
     this.speeds = speeds;
   }
-
+  //I wish the person reading this a very nice day!
   @Override
   public void periodic() {
     SwerveModuleState[] curStates = kinematics.toSwerveModuleStates(curSpeeds);
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     frontLeft.setModuleState(curStates[0], states[0]);
+<<<<<<< Updated upstream
     frontRight.setModuleState(curStates[1], states[1]);
+=======
+    frontRight.setModuleState(curStates[1],states[1]);
+>>>>>>> Stashed changes
     backLeft.setModuleState(curStates[2], states[2]);
     backRight.setModuleState(curStates[3], states[3]);
 
