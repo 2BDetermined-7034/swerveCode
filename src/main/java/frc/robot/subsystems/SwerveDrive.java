@@ -40,7 +40,6 @@ public class SwerveDrive extends SubsystemBase {
 
   private final SwerveDriveKinematics kinematics;
 
-  private ChassisSpeeds curSpeeds;
   private ChassisSpeeds speeds;
   private ChassisSpeeds curSpeeds;
 
@@ -120,11 +119,7 @@ public class SwerveDrive extends SubsystemBase {
     SwerveModuleState[] curStates = kinematics.toSwerveModuleStates(curSpeeds);
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     frontLeft.setModuleState(curStates[0], states[0]);
-<<<<<<< Updated upstream
-    frontRight.setModuleState(curStates[1], states[1]);
-=======
     frontRight.setModuleState(curStates[1],states[1]);
->>>>>>> Stashed changes
     backLeft.setModuleState(curStates[2], states[2]);
     backRight.setModuleState(curStates[3], states[3]);
 
