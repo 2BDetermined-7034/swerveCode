@@ -33,14 +33,12 @@ public class SwerveModule {
     private final CANAnalog spinAnalogEncoder;
     private final CANPIDController spinPIDController;
 
-    private final double offset;
-    
+
     public SwerveModule(int driveMotorId, int spinMotorId, Translation2d location, double offset_) {
         this.location = location;
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         spinMotor = new CANSparkMax(spinMotorId, MotorType.kBrushless);
 
-        offset = offset_;
 
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
         spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
@@ -49,8 +47,7 @@ public class SwerveModule {
         // TODO Velocity Conversion Factor
         spinPIDController = spinMotor.getPIDController();
         spinPIDController.setFeedbackDevice(spinAnalogEncoder);
-        
-        
+                
 
     }
 
@@ -91,10 +88,14 @@ public class SwerveModule {
     // DON'T USE THIS YET. IT ISN'T TESTED.
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
     public void setModuleState(SwerveModuleState curState,SwerveModuleState state) {
-        if(state.angle.getDegrees() == 0 && state.speedMetersPerSecond == 0) {
+        if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0) {
             driveMotor.set(0);
             return;
         }
+    
+        
+
+
         //if(driveMotor.getDeviceId() != 7) return;
 
         /*
@@ -105,28 +106,29 @@ public class SwerveModule {
         SwerveModuleState optimizState = optimize(state, curState.angle.getDegrees());
         
         double angle = optimizState.angle.getDegrees();
+        
         if(angle < 0) angle += 360;
         double rot = angle / 360;
+        
+        //This is a prettier way of getting the exact same FUCKING error. How to tell robot that rot 0 and rot 1 are the same
+        //thing and distance
 
 
-        if(rot < 0.08) {
-            rot += 0.5;
-        }
-        if(rot > 0.92) {
-            rot -= 0.5;
-        }
-
-        spinPIDController.setReference(rot, ControlType.kPosition);
-
+        if (rot == 0) rot = 1;
+        SmartDashboard.putNumber("ROT", rot);
+        spinPIDController.setReference(rot, ControlType.kPosition); 
+        
 
         /*
             SPED CONTROL
                 TODO: Should be done with PID and velocity instead
+        
         */
-
         double driveSpeed = optimizState.speedMetersPerSecond;
         driveMotor.set(driveSpeed);
+
         //spinPIDController.setReference(0.30, ControlType.kPosition);
+
     }
 
     public double correct(double cons) {
@@ -137,9 +139,15 @@ public class SwerveModule {
 
   public SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
     double targetAngle = placeInAppropriate0To360Scope(currentAngle, desiredState.angle.getDegrees());
+    
     double targetSpeed = desiredState.speedMetersPerSecond;
     double delta = targetAngle - currentAngle;
-    targetSpeed /= 4;
+
+    SmartDashboard.putNumber("Want ", targetAngle);
+    SmartDashboard.putNumber("is ", currentAngle);
+    SmartDashboard.putNumber("Delta", delta);
+
+    targetSpeed /= Constants.Swerve.maxSpeed;
     if (Math.abs(delta) > 90){
         targetSpeed *= -1;
         targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
@@ -151,6 +159,7 @@ public class SwerveModule {
     private double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
       double lowerBound;
       double upperBound;
+
       double lowerOffset = scopeReference % 360;
       if (lowerOffset >= 0) {
           lowerBound = scopeReference - lowerOffset;

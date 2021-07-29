@@ -56,7 +56,6 @@ public class SwerveDriveCommand extends CommandBase {
   public void end(boolean interrupted) {
     //swerveDrive.setDriveSpeed(0);
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
-    System.out.println("Sam why did you break this.");
   }
 
   // Returns true when the command should end.
