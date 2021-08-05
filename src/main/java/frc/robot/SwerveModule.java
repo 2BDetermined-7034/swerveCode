@@ -46,8 +46,7 @@ public class SwerveModule {
 
         // TODO Velocity Conversion Factor
         spinPIDController = spinMotor.getPIDController();
-        spinPIDController.setFeedbackDevice(spinAnalogEncoder);
-                
+        spinPIDController.setFeedbackDevice(spinAnalogEncoder);                
 
     }
 
