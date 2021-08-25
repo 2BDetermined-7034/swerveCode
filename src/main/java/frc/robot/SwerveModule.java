@@ -14,10 +14,14 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 /**
@@ -31,7 +35,7 @@ public class SwerveModule {
     private final CANSparkMax spinMotor;
 
     private final CANAnalog spinAnalogEncoder;
-    private final CANPIDController spinPIDController;
+    private final edu.wpi.first.wpilibj.controller.PIDController spinPIDController;
 
 
     public SwerveModule(int driveMotorId, int spinMotorId, Translation2d location, double offset_) {
@@ -45,8 +49,10 @@ public class SwerveModule {
         
 
         // TODO Velocity Conversion Factor
-        spinPIDController = spinMotor.getPIDController();
-        spinPIDController.setFeedbackDevice(spinAnalogEncoder);                
+        //spinPIDController = spinMotor.getPIDController();
+        spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.03, 0, 0, 0.02);
+        //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
+        spinPIDController.enableContinuousInput(-0.5, 0.5);                  
 
     }
 
@@ -58,7 +64,7 @@ public class SwerveModule {
         return spinAnalogEncoder;
     }
 
-    public CANPIDController getSpinPIDController() {
+    public edu.wpi.first.wpilibj.controller.PIDController getSpinPIDController() {
         return spinPIDController;
     }
 
@@ -87,36 +93,34 @@ public class SwerveModule {
     // DON'T USE THIS YET. IT ISN'T TESTED.
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
     public void setModuleState(SwerveModuleState curState,SwerveModuleState state) {
-        if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0) {
+        if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
+            spinMotor.set(0);
             return;
         }
-    
-        
-
-
-        //if(driveMotor.getDeviceId() != 7) return;
-
-        /*
-            ROTATION CONTROL
-                TODO: Fix Rotation jump
-        */
-        
-        SwerveModuleState optimizState = optimize(state, curState.angle.getDegrees());
-        
+   
+        double curAngle = curState.angle.getDegrees();
+        //if(curAngle < 0) curAngle += 360;
+        double curROT = curAngle / 360;
+        SwerveModuleState optimizState = optimize(state, curAngle);
         double angle = optimizState.angle.getDegrees();
         
-        if(angle < 0) angle += 360;
-        double rot = angle / 360;
+        //if(angle < 0) angle += 360;
+        double ROT = angle / 360;
         
-        //This is a prettier way of getting the exact same FUCKING error. How to tell robot that rot 0 and rot 1 are the same
-        //thing and distance
+        //if (rot == 0) rot = 1;
 
+        SmartDashboard.putNumber("cur Angle", curROT);
+        SmartDashboard.putNumber("Want ", ROT);
+        spinPIDController.setSetpoint(ROT);
 
-        if (rot == 0) rot = 1;
-        SmartDashboard.putNumber("ROT", rot);
-        spinPIDController.setReference(rot, ControlType.kPosition); 
-        
+        double move = spinPIDController.calculate(curROT, ROT);
+        if (move >= 0.915) move = 0;
+        move *=2.5;
+
+        SmartDashboard.putNumber("move", move);
+        spinMotor.set(move);
+
 
         /*
             SPED CONTROL
@@ -142,9 +146,6 @@ public class SwerveModule {
     double targetSpeed = desiredState.speedMetersPerSecond;
     double delta = targetAngle - currentAngle;
 
-    SmartDashboard.putNumber("Want ", targetAngle);
-    SmartDashboard.putNumber("is ", currentAngle);
-    SmartDashboard.putNumber("Delta", delta);
 
     targetSpeed /= Constants.Swerve.maxSpeed;
     if (Math.abs(delta) > 90){
