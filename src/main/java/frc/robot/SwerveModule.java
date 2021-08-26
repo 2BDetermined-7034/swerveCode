@@ -49,10 +49,14 @@ public class SwerveModule {
         
 
         // TODO Velocity Conversion Factor
+
+        //NOTE: currently REVs PID controller doesn't support continous input, when they do, switch it to use the CANPIDcontroller
+
         //spinPIDController = spinMotor.getPIDController();
-        spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.03, 0, 0, 0.02);
         //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
-        spinPIDController.enableContinuousInput(-0.5, 0.5);                  
+        spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.03, 0, 0, 0.02);
+        spinPIDController.enableContinuousInput(-0.5, 0.5);  
+        spinPIDController.setIntegratorRange(-0.005, 0.005);               
 
     }
 
@@ -90,33 +94,20 @@ public class SwerveModule {
         spinPIDController.setD(kD);
     }
 
-    // DON'T USE THIS YET. IT ISN'T TESTED.
+    // DON'T USE THIS YET. IT ISN'T TESTED
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
-    public void setModuleState(SwerveModuleState curState,SwerveModuleState state) {
+    public void setModuleState(SwerveModuleState state) {
         if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
             spinMotor.set(0);
             return;
         }
-   
-        double curAngle = curState.angle.getDegrees();
-        //if(curAngle < 0) curAngle += 360;
-        double curROT = curAngle / 360;
-        SwerveModuleState optimizState = optimize(state, curAngle);
-        double angle = optimizState.angle.getDegrees();
-        
-        //if(angle < 0) angle += 360;
-        double ROT = angle / 360;
-        
-        //if (rot == 0) rot = 1;
 
-        SmartDashboard.putNumber("cur Angle", curROT);
-        SmartDashboard.putNumber("Want ", ROT);
-        spinPIDController.setSetpoint(ROT);
-
-        double move = spinPIDController.calculate(curROT, ROT);
-        if (move >= 0.915) move = 0;
-        move *=2.5;
+        double curROT = spinAnalogEncoder.getPosition();
+        double ROT = state.angle.getDegrees() / 360;
+        
+        SmartDashboard.putNumber(" Encoder", spinAnalogEncoder.getPosition());
+        double move = MathUtil.clamp(spinPIDController.calculate(curROT, ROT), -1, 1);
 
         SmartDashboard.putNumber("move", move);
         spinMotor.set(move);
@@ -127,61 +118,15 @@ public class SwerveModule {
                 TODO: Should be done with PID and velocity instead
         
         */
-        double driveSpeed = optimizState.speedMetersPerSecond;
+
+        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed; ;
         driveMotor.set(driveSpeed);
-
-        //spinPIDController.setReference(0.30, ControlType.kPosition);
-
     }
 
     public double correct(double cons) {
         double start = (spinAnalogEncoder.getVoltage() / 3.3);
         return (start - cons) % 1;
     }
-
-
-  public SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
-    double targetAngle = placeInAppropriate0To360Scope(currentAngle, desiredState.angle.getDegrees());
-    
-    double targetSpeed = desiredState.speedMetersPerSecond;
-    double delta = targetAngle - currentAngle;
-
-
-    targetSpeed /= Constants.Swerve.maxSpeed;
-    if (Math.abs(delta) > 90){
-        targetSpeed *= -1;
-        targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
-    }        
-    return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
-  }
-
-
-    private double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
-      double lowerBound;
-      double upperBound;
-
-      double lowerOffset = scopeReference % 360;
-      if (lowerOffset >= 0) {
-          lowerBound = scopeReference - lowerOffset;
-          upperBound = scopeReference + (360 - lowerOffset);
-      } else {
-          upperBound = scopeReference - lowerOffset;
-          lowerBound = scopeReference - (360 + lowerOffset);
-      }
-      while (newAngle < lowerBound) {
-          newAngle += 360;
-      }
-      while (newAngle > upperBound) {
-          newAngle -= 360;
-      }
-      if (newAngle - scopeReference > 180) {
-          newAngle -= 360;
-      } else if (newAngle - scopeReference < -180) {
-          newAngle += 360;
-      }
-      return newAngle;
-  }
-
 
 }
 

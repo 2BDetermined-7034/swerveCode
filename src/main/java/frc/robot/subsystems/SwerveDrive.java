@@ -41,7 +41,6 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDriveKinematics kinematics;
 
   private ChassisSpeeds speeds;
-  private ChassisSpeeds curSpeeds;
 
 
   private final double offsetFL = 0.012; //FL
@@ -71,7 +70,7 @@ public class SwerveDrive extends SubsystemBase {
 
     kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
-    frontLeft.setSpinPIDConstants(3, 0.000, 0);
+    frontLeft.setSpinPIDConstants(2, 0.000, 0);
     frontLeft.setSpinEncoderInverted(true);
     frontLeft.setDriveMotorInverted(true);
 
@@ -79,16 +78,16 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.setSpinEncoderInverted(true);
     frontRight.setDriveMotorInverted(true);
 
-    backLeft.setSpinPIDConstants(3, 0.000, 0);
+    backLeft.setSpinPIDConstants(2, 0.000, 0);
     backLeft.setSpinEncoderInverted(true);
     backLeft.setDriveMotorInverted(true);
 
-    backRight.setSpinPIDConstants(2.3, 0.000, 0);
+    backRight.setSpinPIDConstants(1.3, 0.002, 0);
     backRight.setSpinEncoderInverted(true);
     backRight.setDriveMotorInverted(true);
 
     speeds = new ChassisSpeeds(0, 0, 0);
-    curSpeeds = speeds;
+
 
     // Change this to change what module you're working with for tuning.
     // This will go away when we're done tuning.
@@ -111,18 +110,16 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void setChassisSpeeds(ChassisSpeeds speeds) {
-    curSpeeds = this.speeds;
     this.speeds = speeds;
   }
   //I wish the person reading this a very nice day!
   @Override
   public void periodic() {
-    SwerveModuleState[] curStates = kinematics.toSwerveModuleStates(curSpeeds);
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-    frontLeft.setModuleState(curStates[0], states[0]);
-    frontRight.setModuleState(curStates[1],states[1]);
-    backLeft.setModuleState(curStates[2], states[2]);
-    backRight.setModuleState(curStates[3], states[3]);
+    frontLeft.setModuleState(states[0]);
+    frontRight.setModuleState(states[1]);
+    backLeft.setModuleState(states[2]);
+    backRight.setModuleState(states[3]);
 
 
     //double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
