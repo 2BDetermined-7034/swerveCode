@@ -70,15 +70,15 @@ public class SwerveDrive extends SubsystemBase {
 
     kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
-    frontLeft.setSpinPIDConstants(2, 0.000, 0);
+    frontLeft.setSpinPIDConstants(1.45, 0.002, 0);
     frontLeft.setSpinEncoderInverted(true);
     frontLeft.setDriveMotorInverted(true);
 
-    frontRight.setSpinPIDConstants(2.3, 0.000, 0);
+    frontRight.setSpinPIDConstants(1.5, 0.002, 0);
     frontRight.setSpinEncoderInverted(true);
     frontRight.setDriveMotorInverted(true);
 
-    backLeft.setSpinPIDConstants(2, 0.000, 0);
+    backLeft.setSpinPIDConstants(1.25, 0.001, 0);
     backLeft.setSpinEncoderInverted(true);
     backLeft.setDriveMotorInverted(true);
 
