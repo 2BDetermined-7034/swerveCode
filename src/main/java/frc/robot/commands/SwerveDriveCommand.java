@@ -41,9 +41,9 @@ public class SwerveDriveCommand extends CommandBase {
     double left = rightJoystickX.getAsDouble();
     double spin = leftJoystickX.getAsDouble();
 
-    if(Math.abs(forward) <= 0.1) forward = 0;
-    if(Math.abs(left) <= 0.1) left = 0;
-    if(Math.abs(spin) <= 0.1) spin = 0;
+    if(Math.abs(forward) <= 0.2) forward = 0;
+    if(Math.abs(left) <= 0.2) left = 0;
+    if(Math.abs(spin) <= 0.2) spin = 0;
 
     spin *= Math.PI;
 
