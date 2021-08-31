@@ -54,7 +54,8 @@ public class SwerveModule {
         //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
         spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
-        spinPIDController.setIntegratorRange(-0.005, 0.005);               
+        spinPIDController.setIntegratorRange(-0.005, 0.005);     
+
 
     }
 

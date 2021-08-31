@@ -42,6 +42,7 @@ public class SwerveDrive extends SubsystemBase {
 
   private ChassisSpeeds speeds;
 
+  private double currentAngle;
 
   private final double offsetFL = 0.012; //FL
   private final double offsetFR = 0.001; //FR
@@ -67,6 +68,8 @@ public class SwerveDrive extends SubsystemBase {
     frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFR);
     backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBL);
     backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBR);
+
+    currentAngle = 0;
 
     kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
@@ -107,6 +110,14 @@ public class SwerveDrive extends SubsystemBase {
     currentModule.getSpinPIDController().setI(kI);
     currentModule.getSpinPIDController().setD(kD);
     */
+  }
+
+  public double getCurrentAngle(){
+    return currentAngle;
+  }
+  
+  public void setCurrentAngle(double newAngle){
+    this.currentAngle = newAngle;
   }
 
   public void setChassisSpeeds(ChassisSpeeds speeds) {
