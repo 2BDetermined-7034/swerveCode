@@ -16,12 +16,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 /**
@@ -54,7 +52,7 @@ public class SwerveModule {
 
         //spinPIDController = spinMotor.getPIDController();
         //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
-        spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.03, 0, 0, 0.02);
+        spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
         spinPIDController.setIntegratorRange(-0.005, 0.005);               
 
