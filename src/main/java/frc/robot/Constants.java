@@ -29,6 +29,8 @@ public final class Constants {
         public static final int backLeftSpin = 6;
         public static final int backRightSpin = 4;
 
+        public static final int maxSpeed = 6;
+
     }
 
 }

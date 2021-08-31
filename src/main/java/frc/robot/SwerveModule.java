@@ -14,6 +14,8 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -31,22 +33,29 @@ public class SwerveModule {
     private final CANSparkMax spinMotor;
 
     private final CANAnalog spinAnalogEncoder;
-    private final CANPIDController spinPIDController;
+    private final edu.wpi.first.wpilibj.controller.PIDController spinPIDController;
 
-    private final double offset;
-    
+
     public SwerveModule(int driveMotorId, int spinMotorId, Translation2d location, double offset_) {
         this.location = location;
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         spinMotor = new CANSparkMax(spinMotorId, MotorType.kBrushless);
 
-        offset = offset_;
 
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
         spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
+        
+
         // TODO Velocity Conversion Factor
-        spinPIDController = spinMotor.getPIDController();
-        spinPIDController.setFeedbackDevice(spinAnalogEncoder);
+
+        //NOTE: currently REVs PID controller doesn't support continous input, when they do, switch it to use the CANPIDcontroller
+
+        //spinPIDController = spinMotor.getPIDController();
+        //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
+        spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
+        spinPIDController.enableContinuousInput(-0.5, 0.5);  
+        spinPIDController.setIntegratorRange(-0.005, 0.005);               
+
     }
 
     public Translation2d getLocation() {
@@ -57,7 +66,7 @@ public class SwerveModule {
         return spinAnalogEncoder;
     }
 
-    public CANPIDController getSpinPIDController() {
+    public edu.wpi.first.wpilibj.controller.PIDController getSpinPIDController() {
         return spinPIDController;
     }
 
@@ -83,51 +92,39 @@ public class SwerveModule {
         spinPIDController.setD(kD);
     }
 
-    // DON'T USE THIS YET. IT ISN'T TESTED.
+    // DON'T USE THIS YET. IT ISN'T TESTED
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
     public void setModuleState(SwerveModuleState state) {
-        if(state.angle.getDegrees() == 0 && state.speedMetersPerSecond == 0) {
+        if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
+            spinMotor.set(0);
             return;
         }
+
+        double curROT = spinAnalogEncoder.getPosition();
+        double ROT = state.angle.getDegrees() / 360;
         
-        //if(driveMotor.getDeviceId() != 7) return;
-        // Desired angle (in degrees)
-        double angle = state.angle.getDegrees();
-        if(angle < 0) angle += 360;
-        //angle = MathUtil.clamp(angle, 30, 330);
-        double rot = angle / 360;
-        boolean invertDrive = false;
-        if(rot < 0.08) {
-            rot += 0.5;
-            invertDrive = true;
-        }
-        if(rot > 0.92) {
-            rot -= 0.5;
-            invertDrive = true;
-        }
+        SmartDashboard.putNumber(" Encoder", spinAnalogEncoder.getPosition());
+        double move = MathUtil.clamp(spinPIDController.calculate(curROT, ROT), -1, 1);
+
+        SmartDashboard.putNumber("move", move);
+        spinMotor.set(move);
+
+
+        /*
+            SPED CONTROL
+                TODO: Should be done with PID and velocity instead
         
-        spinPIDController.setReference(rot, ControlType.kPosition);
+        */
 
-        //SmartDashboard.putNumber("SPINNY SPINNY!", state.speedMetersPerSecond);
-
-        // TODO Should be done with PID and velocity instead
-        double driveSpeed = state.speedMetersPerSecond;
-        driveSpeed /= 4;
-        if(invertDrive) driveSpeed *= -1;
-
-        // TODO Temp
-        //driveMotor.set(state.speedMetersPerSecond / 6.0);
+        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed; ;
         driveMotor.set(driveSpeed);
-        //spinPIDController.setReference(0.30, ControlType.kPosition);
-        
     }
-
-
 
     public double correct(double cons) {
         double start = (spinAnalogEncoder.getVoltage() / 3.3);
         return (start - cons) % 1;
     }
+
 }
 

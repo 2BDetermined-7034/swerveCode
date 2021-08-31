@@ -39,11 +39,12 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveModule backRight;
 
   private final SwerveDriveKinematics kinematics;
+
   private ChassisSpeeds speeds;
 
 
   private final double offsetFL = 0.012; //FL
-  private final double offsetFR = 0.000; //FR
+  private final double offsetFR = 0.001; //FR
   private final double offsetBL = 0.014; //BL
   private final double offsetBR = -0.009; //BR 
 
@@ -62,27 +63,31 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive() {
     double distanceToCenter = 0.18811;
 
-    frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFR);
-    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFL);
+    frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFL);
+    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFR);
     backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBL);
     backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBR);
 
     kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
-    frontLeft.setSpinPIDConstants(3, 0.003, 0);
+    frontLeft.setSpinPIDConstants(1.45, 0.002, 0);
     frontLeft.setSpinEncoderInverted(true);
     frontLeft.setDriveMotorInverted(true);
-    frontRight.setSpinPIDConstants(2.3, 0.002, 0);
+
+    frontRight.setSpinPIDConstants(1.5, 0.002, 0);
     frontRight.setSpinEncoderInverted(true);
     frontRight.setDriveMotorInverted(true);
-    backLeft.setSpinPIDConstants(3, 0.003, 0);
+
+    backLeft.setSpinPIDConstants(1.25, 0.001, 0);
     backLeft.setSpinEncoderInverted(true);
     backLeft.setDriveMotorInverted(true);
-    backRight.setSpinPIDConstants(2.3, 0.003, 0);
+
+    backRight.setSpinPIDConstants(1.3, 0.002, 0);
     backRight.setSpinEncoderInverted(true);
     backRight.setDriveMotorInverted(true);
 
     speeds = new ChassisSpeeds(0, 0, 0);
+
 
     // Change this to change what module you're working with for tuning.
     // This will go away when we're done tuning.
@@ -107,7 +112,7 @@ public class SwerveDrive extends SubsystemBase {
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     this.speeds = speeds;
   }
-
+  //I wish the person reading this a very nice day!
   @Override
   public void periodic() {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);

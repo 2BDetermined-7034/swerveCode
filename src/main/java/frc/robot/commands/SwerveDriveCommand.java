@@ -41,14 +41,14 @@ public class SwerveDriveCommand extends CommandBase {
     double left = rightJoystickX.getAsDouble();
     double spin = leftJoystickX.getAsDouble();
 
-    if(Math.abs(forward) <= 0.1) forward = 0;
-    if(Math.abs(left) <= 0.1) left = 0;
-    if(Math.abs(spin) <= 0.1) spin = 0;
+    if(Math.abs(forward) <= 0.2) forward = 0;
+    if(Math.abs(left) <= 0.2) left = 0;
+    if(Math.abs(spin) <= 0.2) spin = 0;
 
     spin *= Math.PI;
 
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(forward, left, spin));
-    //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 1, 0));
+    //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
   };
 
   // Called once the command ends or is interrupted.
@@ -56,7 +56,6 @@ public class SwerveDriveCommand extends CommandBase {
   public void end(boolean interrupted) {
     //swerveDrive.setDriveSpeed(0);
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
-    System.out.println("Sam why did you break this.");
   }
 
   // Returns true when the command should end.
