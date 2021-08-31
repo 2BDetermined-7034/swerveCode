@@ -11,7 +11,9 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.SwerveDrive;
 
 public class SwerveDriveCommand extends CommandBase {
@@ -38,7 +40,7 @@ public class SwerveDriveCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {  
+  public void execute() {      
     double forward = rightJoystickY.getAsDouble();
     double left = rightJoystickX.getAsDouble();
     double spin = leftJoystickX.getAsDouble();
@@ -47,7 +49,8 @@ public class SwerveDriveCommand extends CommandBase {
     if(Math.abs(left) <= 0.2) left = 0;
     if(Math.abs(spin) <= 0.2) spin = 0;
 
-    spin = Math.PI / spin;
+
+    spin *= Math.PI;
 
     swerveDrive.setChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(forward, left, spin, Rotation2d.fromDegrees(swerveDrive.getCurrentAngle())));
     //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));

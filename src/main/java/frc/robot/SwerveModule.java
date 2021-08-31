@@ -44,7 +44,6 @@ public class SwerveModule {
 
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
         spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
-        
 
         // TODO Velocity Conversion Factor
 
@@ -110,6 +109,11 @@ public class SwerveModule {
 
         SmartDashboard.putNumber("move", move);
         spinMotor.set(move);
+
+
+
+
+
 
 
         /*

@@ -20,6 +20,12 @@ import com.revrobotics.EncoderType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.jni.CANSparkMaxJNI;
 
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -42,6 +48,7 @@ public class SwerveDrive extends SubsystemBase {
 
   private ChassisSpeeds speeds;
 
+  AHRS ahrs;
   private double currentAngle;
 
   private final double offsetFL = 0.012; //FL
@@ -70,7 +77,9 @@ public class SwerveDrive extends SubsystemBase {
     backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBR);
 
     currentAngle = 0;
-
+            
+    ahrs = new AHRS(SPI.Port.kMXP);
+  
     kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
     frontLeft.setSpinPIDConstants(1.45, 0.002, 0);
@@ -126,6 +135,10 @@ public class SwerveDrive extends SubsystemBase {
   //I wish the person reading this a very nice day!
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("YAW", ahrs.getYaw());
+    SmartDashboard.putNumber("Test", ahrs.getRawAccelX());
+    SmartDashboard.putBoolean("IS ON", ahrs.isConnected());
+
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     frontLeft.setModuleState(states[0]);
     frontRight.setModuleState(states[1]);
