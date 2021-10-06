@@ -44,6 +44,7 @@ public class SwerveDriveCommand extends CommandBase {
     double forward = rightJoystickY.getAsDouble();
     double left = rightJoystickX.getAsDouble();
     double spin = leftJoystickX.getAsDouble();
+    
 
     if(Math.abs(forward) <= 0.2) forward = 0;
     if(Math.abs(left) <= 0.2) left = 0;
@@ -51,6 +52,11 @@ public class SwerveDriveCommand extends CommandBase {
 
 
     spin *= Math.PI;
+
+
+
+
+
 
     swerveDrive.setChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(forward, left, spin, Rotation2d.fromDegrees(swerveDrive.getCurrentAngle())));
     //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));

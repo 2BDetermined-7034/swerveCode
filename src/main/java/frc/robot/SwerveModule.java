@@ -101,6 +101,8 @@ public class SwerveModule {
             return;
         }
 
+        
+
         double curROT = spinAnalogEncoder.getPosition();
         double ROT = state.angle.getDegrees() / 360;
         

@@ -72,11 +72,9 @@ public class SwerveDrive extends SubsystemBase {
     double distanceToCenter = 0.18811;
 
     frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFL);
-    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFR);
-    backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBL);
-    backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetBR);
-
-    currentAngle = 0;
+    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, -distanceToCenter), offsetFR);
+    backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(-distanceToCenter, distanceToCenter), offsetBL);
+    backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(-distanceToCenter, -distanceToCenter), offsetBR);
             
     ahrs = new AHRS(SPI.Port.kMXP);
   
@@ -122,23 +120,18 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public double getCurrentAngle(){
-    return currentAngle;
+    double ang = ahrs.getYaw();
+    if (ang < 0) ang += 360;
+    return ang;
   }
   
-  public void setCurrentAngle(double newAngle){
-    this.currentAngle = newAngle;
-  }
-
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     this.speeds = speeds;
   }
   //I wish the person reading this a very nice day!
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("YAW", ahrs.getYaw());
-    SmartDashboard.putNumber("Test", ahrs.getRawAccelX());
-    SmartDashboard.putBoolean("IS ON", ahrs.isConnected());
-
+    SmartDashboard.putNumber("YAW", getCurrentAngle());
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     frontLeft.setModuleState(states[0]);
     frontRight.setModuleState(states[1]);
@@ -157,15 +150,6 @@ public class SwerveDrive extends SubsystemBase {
     //double cbl = backLeft.correct(offsetBR);
     //double cbr = backRight.correct(offsetBL);
 
-    //SmartDashboard.putNumber("Analog number FL", fl);
-    //SmartDashboard.putNumber("Analog number FR", fr);
-    //SmartDashboard.putNumber("Analog number BL", bl);
-    //SmartDashboard.putNumber("Analog number BR", br);
-
-    //SmartDashboard.putNumber("Analog number CFL", cfl);
-    //SmartDashboard.putNumber("Analog number CFR", cfr);
-    //SmartDashboard.putNumber("Analog number CBL", cbl);
-    //SmartDashboard.putNumber("Analog number CBR", cbr);
 
 
     /*
