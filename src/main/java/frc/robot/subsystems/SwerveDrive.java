@@ -119,9 +119,10 @@ public class SwerveDrive extends SubsystemBase {
     */
   }
 
+  
   public double getCurrentAngle(){
     double ang = ahrs.getYaw();
-    if (ang < 0) ang += 360;
+    //if (ang < 0) ang += 360;
     return ang;
   }
   
@@ -133,10 +134,10 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("YAW", getCurrentAngle());
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-    frontLeft.setModuleState(states[0]);
-    frontRight.setModuleState(states[1]);
-    backLeft.setModuleState(states[2]);
-    backRight.setModuleState(states[3]);
+    frontLeft.setModuleState(states[0], getCurrentAngle());
+    frontRight.setModuleState(states[1], getCurrentAngle());
+    backLeft.setModuleState(states[2], getCurrentAngle());
+    backRight.setModuleState(states[3], getCurrentAngle());
 
 
     //double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
@@ -160,26 +161,6 @@ public class SwerveDrive extends SubsystemBase {
     double p = SmartDashboard.getNumber("P Gain", 0);
     double i = SmartDashboard.getNumber("I Gain", 0);
     double d = SmartDashboard.getNumber("D Gain", 0);
-
-    if(p != kP) {
-      currentModule.getSpinPIDController().setP(p);
-      kP = p;
-    }
-
-    if(i != kI) {
-      currentModule.getSpinPIDController().setI(i);
-      kI = i;
-    }
-
-    if(d != kD) {
-      currentModule.getSpinPIDController().setD(d);
-      kD = d;
-    }
-
-    double lowerGoal = SmartDashboard.getNumber("No Button Goal", 0);
-    double upperGoal = SmartDashboard.getNumber("Button Goal", 0);
-
-    currentModule.getSpinPIDController().setReference(button.get() ? upperGoal : lowerGoal, ControlType.kPosition);
     */
   }
 

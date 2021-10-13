@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.subsystems.SwerveDrive;
 
 /**
  * Add your docs here.
@@ -94,17 +95,18 @@ public class SwerveModule {
 
     // DON'T USE THIS YET. IT ISN'T TESTED
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
-    public void setModuleState(SwerveModuleState state) {
+    public void setModuleState(SwerveModuleState state, double yaw) {
         if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
             spinMotor.set(0);
             return;
         }
-
-        
-
+          
+        //This is where the wheel is 
         double curROT = spinAnalogEncoder.getPosition();
-        double ROT = state.angle.getDegrees() / 360;
+        //This is where we want to go
+        double ROT = (state.angle.getDegrees()) / 360;
+
         
         SmartDashboard.putNumber(" Encoder", spinAnalogEncoder.getPosition());
         double move = MathUtil.clamp(spinPIDController.calculate(curROT, ROT), -1, 1);
@@ -124,7 +126,9 @@ public class SwerveModule {
         
         */
 
-        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed; ;
+        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+
+
         driveMotor.set(driveSpeed);
     }
 

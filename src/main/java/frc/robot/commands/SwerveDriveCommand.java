@@ -50,12 +50,9 @@ public class SwerveDriveCommand extends CommandBase {
     if(Math.abs(left) <= 0.2) left = 0;
     if(Math.abs(spin) <= 0.2) spin = 0;
 
+    //if (swerveDrive.getCurrentAngle() > -90 && swerveDrive.getCurrentAngle() < 90) forward *= -1;
 
     spin *= Math.PI;
-
-
-
-
 
 
     swerveDrive.setChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(forward, left, spin, Rotation2d.fromDegrees(swerveDrive.getCurrentAngle())));
