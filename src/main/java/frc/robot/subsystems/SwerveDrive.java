@@ -49,24 +49,12 @@ public class SwerveDrive extends SubsystemBase {
   private ChassisSpeeds speeds;
 
   AHRS ahrs;
-  private double currentAngle;
 
   private final double offsetFL = 0.012; //FL
   private final double offsetFR = 0.001; //FR
   private final double offsetBL = 0.014; //BL
   private final double offsetBR = -0.009; //BR 
 
-
-  //private final Joystick joystick;
-  //private final JoystickButton button;
-
-  /*
-  private final SwerveModule currentModule;
-
-  double kP = 2;
-  double kI = 0.0001;
-  double kD = 0;
-  */
 
   public SwerveDrive() {
     double distanceToCenter = 0.18811;
@@ -97,26 +85,6 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setDriveMotorInverted(true);
 
     speeds = new ChassisSpeeds(0, 0, 0);
-
-
-    // Change this to change what module you're working with for tuning.
-    // This will go away when we're done tuning.
-    //currentModule = backRight;
-
-    //joystick = new Joystick(0);
-    //button = new JoystickButton(joystick, 4);
-
-    /*
-    SmartDashboard.putNumber("P Gain", kP);
-    SmartDashboard.putNumber("I Gain", kI);
-    SmartDashboard.putNumber("D Gain", kD);
-    SmartDashboard.putNumber("No Button Goal", 0.3);
-    SmartDashboard.putNumber("Button Goal", 0.7);
-    currentModule.setSpinEncoderInverted(true);
-    currentModule.getSpinPIDController().setP(kP);
-    currentModule.getSpinPIDController().setI(kI);
-    currentModule.getSpinPIDController().setD(kD);
-    */
   }
 
   

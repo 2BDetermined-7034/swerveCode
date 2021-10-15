@@ -96,6 +96,7 @@ public class SwerveModule {
     // DON'T USE THIS YET. IT ISN'T TESTED
     // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
     public void setModuleState(SwerveModuleState state, double yaw) {
+        //If the controller input is zero and we're at our setpoint, just stop 
         if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
             spinMotor.set(0);

@@ -50,8 +50,6 @@ public class SwerveDriveCommand extends CommandBase {
     if(Math.abs(left) <= 0.2) left = 0;
     if(Math.abs(spin) <= 0.2) spin = 0;
 
-    //if (swerveDrive.getCurrentAngle() > -90 && swerveDrive.getCurrentAngle() < 90) forward *= -1;
-
     spin *= Math.PI;
 
 
@@ -62,7 +60,6 @@ public class SwerveDriveCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //swerveDrive.setDriveSpeed(0);
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
   }
 
