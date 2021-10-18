@@ -9,7 +9,7 @@
 
 package frc.robot.subsystems;
 
-import java.text.DecimalFormat;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 import com.revrobotics.CANAnalog;
 import com.revrobotics.CANEncoder;
@@ -26,18 +26,29 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
 public class SwerveDrive extends SubsystemBase {
+
+
+  /*
+    Common swerve drive errors and quick fixes:
+      - Issue:  one of the modules keeps slowly swivelying after use
+        - Fix: Re-zero encoder 
+      - Issue: Error CAN SPARK MAX TIMED OUT
+        - Fix: Make sure everything is plugged in 
+
+  */
+
+
 
   private final SwerveModule frontLeft;
   private final SwerveModule frontRight;
@@ -90,7 +101,12 @@ public class SwerveDrive extends SubsystemBase {
   
   public double getCurrentAngle(){
     double ang = ahrs.getYaw();
-    //if (ang < 0) ang += 360;
+    //Converts to -180, 180 system
+    if (ang > 180) ang -= 360;
+
+    //flip yaw 
+    ang *= -1;
+
     return ang;
   }
   
@@ -99,38 +115,127 @@ public class SwerveDrive extends SubsystemBase {
   }
   //I wish the person reading this a very nice day!
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("YAW", getCurrentAngle());
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-    frontLeft.setModuleState(states[0], getCurrentAngle());
-    frontRight.setModuleState(states[1], getCurrentAngle());
-    backLeft.setModuleState(states[2], getCurrentAngle());
-    backRight.setModuleState(states[3], getCurrentAngle());
-
-
-    //double fl = frontRight.getSpinAnlogEncoder().getVoltage() / 3.3;
-    //double fr = frontLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
-    //double bl = backLeft.getSpinAnlogEncoder().getVoltage() / 3.3;
-    //double br = backRight.getSpinAnlogEncoder().getVoltage() / 3.3;
-
-
-    //double cfl = frontRight.correct(offsetFR);
-    //double cfr = frontRight.correct(offsetFL);
-    //double cbl = backLeft.correct(offsetBR);
-    //double cbr = backRight.correct(offsetBL);
-
-
-
-    /*
-    //Jakob I wrote code that works -Sam
+  public void periodic(){
+    //A swerve module state has magnitude in m/s and angle in degrees(Technically rotation2d)
     
-    SmartDashboard.putNumber("Analog Position", currentModule.getSpinAnlogEncoder().getPosition());
-    SmartDashboard.putNumber("Analog Position 2", currentModule.getSpinAnlogEncoder().getPosition());
-    double p = SmartDashboard.getNumber("P Gain", 0);
-    double i = SmartDashboard.getNumber("I Gain", 0);
-    double d = SmartDashboard.getNumber("D Gain", 0);
-    */
+    SwerveModuleState[] states = new SwerveModuleState[4];
+
+    //Get robot yaw
+    double yaw = getCurrentAngle();
+
+    //Get back joystick data
+    double rightY = speeds.vxMetersPerSecond;
+    double rightX = speeds.vyMetersPerSecond;
+    double leftX = speeds.omegaRadiansPerSecond;
+
+    //Get constants
+    double frConstant = Constants.Swerve.frSpin;
+    double brConstant = Constants.Swerve.brSpin;
+    double flConstant = Constants.Swerve.flSpin;
+    double blConstant = Constants.Swerve.blSpin;
+
+
+    double speedTranslation = MathUtil.clamp(Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2)), 0d, 1d);
+    double directionTranslation = Math.toDegrees(Math.atan2(rightX, rightY));
+    double speedRotation = leftX;
+
+
+    double frAngle = calculateAngle(speedTranslation, directionTranslation, speedRotation , yaw, frConstant);
+    double frPow = calculatePower(speedTranslation, directionTranslation, speedRotation , yaw, frConstant);
+
+
+    double brAngle = calculateAngle(speedTranslation, directionTranslation, speedRotation , yaw, brConstant);
+    double brPow = calculatePower(speedTranslation, directionTranslation, speedRotation , yaw, brConstant);
+
+
+    double flAngle = calculateAngle(speedTranslation, directionTranslation, speedRotation , yaw, flConstant);
+    double flPow = calculatePower(speedTranslation, directionTranslation, speedRotation , yaw, flConstant);
+
+
+    double blAngle = calculateAngle(speedTranslation, directionTranslation, speedRotation , yaw, blConstant);
+    double blPow = calculatePower(speedTranslation, directionTranslation, speedRotation , yaw, blConstant);
+
+
+    //FL
+    states[0] = new SwerveModuleState(flPow, Rotation2d.fromDegrees(flAngle));
+    //FR
+    states[1] = new SwerveModuleState(frPow, Rotation2d.fromDegrees(frAngle));
+    //BL
+    states[2] = new SwerveModuleState(blPow, Rotation2d.fromDegrees(blAngle));
+    //BR
+    states[3] = new SwerveModuleState(brPow, Rotation2d.fromDegrees(brAngle));
+    
+
+    frontLeft.setModuleState(states[0]);
+    frontRight.setModuleState(states[1]);
+    backLeft.setModuleState(states[2]);
+    backRight.setModuleState(states[3]);
+
+
+    SmartDashboard.putNumber("rightY", rightY);
+    SmartDashboard.putNumber("rightX", rightX);
+    SmartDashboard.putNumber("leftX", leftX);
+    SmartDashboard.putNumber("YAW", yaw);
+
+    SmartDashboard.putNumber("speedTranslation", speedTranslation);
+    SmartDashboard.putNumber("directionTranslation", directionTranslation);
+    SmartDashboard.putNumber("SpeedRotation", speedRotation);
+
+    SmartDashboard.putNumber("FR angle", frAngle);
+    SmartDashboard.putNumber("FR pow", frPow);
+
+    SmartDashboard.putNumber("BR angle", brAngle);
+
+    SmartDashboard.putNumber("FL angle", flAngle);
+
+    SmartDashboard.putNumber("BL angle", blAngle);
+
+
   }
+
+    /**
+     * Math can be found on the swerve2020 channel in the pins
+     * @param s Speed of translation
+     * @param d Direction of translation
+     * @param r Speed of rotation
+     * @param p Rotational position
+     * @param c Angle constant per module
+     * @return Angle in degrees 
+     */
+    public double calculateAngle(double s, double d, double r, double p, double c){
+      double dpc = d - p - c;
+      double atan2P1 = s * Math.sin(Math.toRadians(dpc));
+      double atan2P2 = r + s * Math.cos(Math.toRadians(dpc));
+      double angle = c + Math.toDegrees( Math.atan2(atan2P1, atan2P2));
+
+      //Wrap angle
+      if (angle > 180) angle -= 360;
+      if (angle < -180) angle += 360;
+
+      return angle;
+    }
+
+    /**
+    * Math can be found on the swerve2020 channel in the pins
+     * @param s Speed of translation
+     * @param d Direction of translation
+     * @param r Speed of rotation
+     * @param p Rotational position
+     * @param c Angle constant per module
+     * @return Speed 0-1
+     */
+    public double calculatePower(double s, double d, double r, double p, double c){
+
+      double dpc = d - p - c;
+      double uncorrected = Math.sqrt(Math.pow(r, 2) + Math.pow(s, 2) + (2 * r * s) * Math.cos(Math.toRadians(dpc)));
+      double correction = (Math.max(s, Math.abs(r))) / (s + Math.abs(r));
+
+      double ret = uncorrected * correction;
+
+      if (Double.isNaN(ret)) ret = 0;
+
+      return ret;
+    }
 
 
 }

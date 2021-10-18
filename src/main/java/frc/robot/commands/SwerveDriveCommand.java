@@ -41,20 +41,19 @@ public class SwerveDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {      
-    double forward = rightJoystickY.getAsDouble();
-    double left = rightJoystickX.getAsDouble();
-    double spin = leftJoystickX.getAsDouble();
+    double rightY = rightJoystickY.getAsDouble();
+    double rightX = rightJoystickX.getAsDouble();
+    double leftX = leftJoystickX.getAsDouble();
     
 
-    if(Math.abs(forward) <= 0.2) forward = 0;
-    if(Math.abs(left) <= 0.2) left = 0;
-    if(Math.abs(spin) <= 0.2) spin = 0;
+    if(Math.abs(rightY) <= 0.05 && Math.abs(rightX) <= 0.05){
+      rightY = 0;
+      rightX = 0;
+    }
 
-    spin *= Math.PI;
+    if(Math.abs(leftX) <= 0.01) leftX = 0;
 
-
-    swerveDrive.setChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(forward, left, spin, Rotation2d.fromDegrees(swerveDrive.getCurrentAngle())));
-    //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
   };
 
   // Called once the command ends or is interrupted.

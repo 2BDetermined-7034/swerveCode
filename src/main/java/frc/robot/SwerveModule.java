@@ -92,10 +92,12 @@ public class SwerveModule {
         spinPIDController.setI(kI);
         spinPIDController.setD(kD);
     }
+    /**
+     * Set the motors to their desired position using a desired module state (speed and power)
+     * @param state Your desired output vector of the robot
+     */
+    public void setModuleState(SwerveModuleState state) {
 
-    // DON'T USE THIS YET. IT ISN'T TESTED
-    // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
-    public void setModuleState(SwerveModuleState state, double yaw) {
         //If the controller input is zero and we're at our setpoint, just stop 
         if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
@@ -106,37 +108,19 @@ public class SwerveModule {
         //This is where the wheel is 
         double curROT = spinAnalogEncoder.getPosition();
         //This is where we want to go
-        double ROT = (state.angle.getDegrees()) / 360;
+        double ROT = state.angle.getDegrees() / 360;
 
-        
-        SmartDashboard.putNumber(" Encoder", spinAnalogEncoder.getPosition());
         double move = MathUtil.clamp(spinPIDController.calculate(curROT, ROT), -1, 1);
 
+
         SmartDashboard.putNumber("move", move);
-        spinMotor.set(move);
-
-
-
-
-
-
-
-        /*
-            SPED CONTROL
-                TODO: Should be done with PID and velocity instead
-        
-        */
-
         double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
-
-
+        
+        spinMotor.set(move);
         driveMotor.set(driveSpeed);
+
     }
 
-    public double correct(double cons) {
-        double start = (spinAnalogEncoder.getVoltage() / 3.3);
-        return (start - cons) % 1;
-    }
 
 }
 
