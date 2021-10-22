@@ -11,16 +11,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpiutil.math.MathUtil;
 
-import com.revrobotics.CANAnalog;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
-import com.revrobotics.CANAnalog.AnalogMode;
-import com.revrobotics.jni.CANSparkMaxJNI;
-
-
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -48,36 +38,24 @@ public class SwerveDrive extends SubsystemBase {
 
   */
 
-
-
   private final SwerveModule frontLeft;
   private final SwerveModule frontRight;
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
 
-  private final SwerveDriveKinematics kinematics;
-
   private ChassisSpeeds speeds;
 
   AHRS ahrs;
 
-  private final double offsetFL = 0.012; //FL
-  private final double offsetFR = 0.001; //FR
-  private final double offsetBL = 0.014; //BL
-  private final double offsetBR = -0.009; //BR 
-
 
   public SwerveDrive() {
-    double distanceToCenter = 0.18811;
 
-    frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin, new Translation2d(distanceToCenter, distanceToCenter), offsetFL);
-    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin, new Translation2d(distanceToCenter, -distanceToCenter), offsetFR);
-    backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin, new Translation2d(-distanceToCenter, distanceToCenter), offsetBL);
-    backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin, new Translation2d(-distanceToCenter, -distanceToCenter), offsetBR);
+    frontLeft = new SwerveModule(Constants.Swerve.frontLeftDrive, Constants.Swerve.frontLeftSpin);
+    frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin);
+    backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin);
+    backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin);
             
     ahrs = new AHRS(SPI.Port.kMXP);
-  
-    kinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
 
     frontLeft.setSpinPIDConstants(1.45, 0.002, 0);
     frontLeft.setSpinEncoderInverted(true);
@@ -113,6 +91,7 @@ public class SwerveDrive extends SubsystemBase {
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     this.speeds = speeds;
   }
+  
   //I wish the person reading this a very nice day!
   @Override
   public void periodic(){
@@ -172,6 +151,7 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setModuleState(states[3]);
 
 
+    //Debug printings
     SmartDashboard.putNumber("rightY", rightY);
     SmartDashboard.putNumber("rightX", rightX);
     SmartDashboard.putNumber("leftX", leftX);
@@ -185,11 +165,13 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("FR pow", frPow);
 
     SmartDashboard.putNumber("BR angle", brAngle);
+    SmartDashboard.putNumber("BR pow", brPow);
 
     SmartDashboard.putNumber("FL angle", flAngle);
+    SmartDashboard.putNumber("FL pow", flPow);
 
     SmartDashboard.putNumber("BL angle", blAngle);
-
+    SmartDashboard.putNumber("BL pow", blPow);
 
   }
 
@@ -206,7 +188,7 @@ public class SwerveDrive extends SubsystemBase {
       double dpc = d - p - c;
       double atan2P1 = s * Math.sin(Math.toRadians(dpc));
       double atan2P2 = r + s * Math.cos(Math.toRadians(dpc));
-      double angle = c + Math.toDegrees( Math.atan2(atan2P1, atan2P2));
+      double angle = c + Math.toDegrees(Math.atan2(atan2P1, atan2P2));
 
       //Wrap angle
       if (angle > 180) angle -= 360;

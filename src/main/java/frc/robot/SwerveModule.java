@@ -28,8 +28,6 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class SwerveModule {
 
-    private final Translation2d location;
-
     private final CANSparkMax driveMotor;
     private final CANSparkMax spinMotor;
 
@@ -37,8 +35,7 @@ public class SwerveModule {
     private final edu.wpi.first.wpilibj.controller.PIDController spinPIDController;
 
 
-    public SwerveModule(int driveMotorId, int spinMotorId, Translation2d location, double offset_) {
-        this.location = location;
+    public SwerveModule(int driveMotorId, int spinMotorId) {
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         spinMotor = new CANSparkMax(spinMotorId, MotorType.kBrushless);
 
@@ -58,11 +55,6 @@ public class SwerveModule {
 
 
     }
-
-    public Translation2d getLocation() {
-        return location;
-    }
-
     public CANAnalog getSpinAnlogEncoder() {
         return spinAnalogEncoder;
     }
@@ -99,7 +91,7 @@ public class SwerveModule {
     public void setModuleState(SwerveModuleState state) {
 
         //If the controller input is zero and we're at our setpoint, just stop 
-        if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
+        if(state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
             spinMotor.set(0);
             return;

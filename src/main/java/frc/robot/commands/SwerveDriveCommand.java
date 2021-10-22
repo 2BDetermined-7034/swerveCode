@@ -46,7 +46,7 @@ public class SwerveDriveCommand extends CommandBase {
     double leftX = leftJoystickX.getAsDouble();
     
 
-    if(Math.abs(rightY) <= 0.05 && Math.abs(rightX) <= 0.05){
+    if(Math.abs(rightY) <= 0.1 && Math.abs(rightX) <= 0.1){
       rightY = 0;
       rightX = 0;
     }
