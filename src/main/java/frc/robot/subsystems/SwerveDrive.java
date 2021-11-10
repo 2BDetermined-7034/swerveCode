@@ -116,7 +116,7 @@ public class SwerveDrive extends SubsystemBase {
 
     double speedTranslation = MathUtil.clamp(Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2)), 0d, 1d);
     double directionTranslation = Math.toDegrees(Math.atan2(rightX, rightY));
-    double speedRotation = leftX;
+    double speedRotation = -leftX;
 
 
     double frAngle = calculateAngle(speedTranslation, directionTranslation, speedRotation , yaw, frConstant);

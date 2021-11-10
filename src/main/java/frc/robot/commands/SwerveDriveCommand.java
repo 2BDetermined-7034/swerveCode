@@ -51,7 +51,7 @@ public class SwerveDriveCommand extends CommandBase {
       rightX = 0;
     }
 
-    if(Math.abs(leftX) <= 0.01) leftX = 0;
+    if(Math.abs(leftX) <= 0.05) leftX = 0;
 
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
   };
