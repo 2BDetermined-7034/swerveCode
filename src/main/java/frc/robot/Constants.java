@@ -29,7 +29,16 @@ public final class Constants {
         public static final int backLeftSpin = 6;
         public static final int backRightSpin = 4;
 
-        public static final int maxSpeed = 6;
+
+        //Bigger number, smaller max speed
+        public static final double maxSpeed = 3;
+
+
+        //which direction (degrees) a module has to rotate to spin
+        public static final double frSpin = -135d;
+        public static final double brSpin = 135d;
+        public static final double blSpin = 45d;
+        public static final double flSpin = -45d;
 
     }
 

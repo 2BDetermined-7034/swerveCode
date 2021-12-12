@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.revrobotics.CANAnalog;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
@@ -21,30 +22,29 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.subsystems.SwerveDrive;
 
 /**
  * Add your docs here.
  */
 public class SwerveModule {
 
-    private final Translation2d location;
-
     private final CANSparkMax driveMotor;
     private final CANSparkMax spinMotor;
 
     private final CANAnalog spinAnalogEncoder;
+    private final CANEncoder spinRevEncoder;
     private final edu.wpi.first.wpilibj.controller.PIDController spinPIDController;
 
 
-    public SwerveModule(int driveMotorId, int spinMotorId, Translation2d location, double offset_) {
-        this.location = location;
+    public SwerveModule(int driveMotorId, int spinMotorId) {
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         spinMotor = new CANSparkMax(spinMotorId, MotorType.kBrushless);
 
-
+        spinRevEncoder = spinMotor.getEncoder();
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
+        spinRevEncoder.setPositionConversionFactor(196/15);
         spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
-        
 
         // TODO Velocity Conversion Factor
 
@@ -54,14 +54,10 @@ public class SwerveModule {
         //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
         spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
-        spinPIDController.setIntegratorRange(-0.005, 0.005);               
+        spinPIDController.setIntegratorRange(-0.005, 0.005);     
+
 
     }
-
-    public Translation2d getLocation() {
-        return location;
-    }
-
     public CANAnalog getSpinAnlogEncoder() {
         return spinAnalogEncoder;
     }
@@ -92,39 +88,54 @@ public class SwerveModule {
         spinPIDController.setD(kD);
     }
 
-    // DON'T USE THIS YET. IT ISN'T TESTED
-    // WE ALSO NEED TO ADD THE ACTUAL DRIVE WHEEL MOTORS
+    /**
+     * @return new angle in 0 - 1.0
+     */
+    public double getScopedEncoderPos(){
+        double pos = spinRevEncoder.getPosition();
+        pos = pos % 360;
+        if (pos < 0) pos += 180;
+        return pos;
+    }
+    /**
+     * Set the motors to their desired position using a desired module state (speed and power)
+     * @param state Your desired output vector of the robot
+     */
     public void setModuleState(SwerveModuleState state) {
-        if(state.angle.getDegrees() <= 0 && state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
+
+        //If the controller input is zero and we're at our setpoint, just stop 
+        if(state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
             spinMotor.set(0);
             return;
         }
+          
+        //This is where the wheel is 
+        double curPos = spinAnalogEncoder.getPosition();
+        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+        SmartDashboard.putNumber("En", curPos);
+        SmartDashboard.putNumber("Alt en", getScopedEncoderPos());
 
-        double curROT = spinAnalogEncoder.getPosition();
-        double ROT = state.angle.getDegrees() / 360;
-        
-        SmartDashboard.putNumber(" Encoder", spinAnalogEncoder.getPosition());
-        double move = MathUtil.clamp(spinPIDController.calculate(curROT, ROT), -1, 1);
-
-        SmartDashboard.putNumber("move", move);
-        spinMotor.set(move);
-
-
+        //This is where we want to go
+        double pos = state.angle.getDegrees() / 360;
+        SmartDashboard.putNumber("POS", pos);
+        double delta = Math.abs(curPos - pos);
         /*
-            SPED CONTROL
-                TODO: Should be done with PID and velocity instead
-        
+        if (delta > 0.25){
+            driveSpeed *= -1;
+            pos -= 0.5;
+        } 
         */
 
-        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed; ;
+
+        double move = MathUtil.clamp(spinPIDController.calculate(curPos, pos), -1, 1);
+ 
+        
+        spinMotor.set(move);
         driveMotor.set(driveSpeed);
+
     }
 
-    public double correct(double cons) {
-        double start = (spinAnalogEncoder.getVoltage() / 3.3);
-        return (start - cons) % 1;
-    }
 
 }
 

@@ -9,8 +9,11 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.SwerveDrive;
 
 public class SwerveDriveCommand extends CommandBase {
@@ -32,29 +35,30 @@ public class SwerveDriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {  
-    double forward = rightJoystickY.getAsDouble();
-    double left = rightJoystickX.getAsDouble();
-    double spin = leftJoystickX.getAsDouble();
+  public void execute() {      
+    double rightY = rightJoystickY.getAsDouble();
+    double rightX = rightJoystickX.getAsDouble();
+    double leftX = leftJoystickX.getAsDouble();
+    
 
-    if(Math.abs(forward) <= 0.2) forward = 0;
-    if(Math.abs(left) <= 0.2) left = 0;
-    if(Math.abs(spin) <= 0.2) spin = 0;
+    if(Math.abs(rightY) <= 0.1 && Math.abs(rightX) <= 0.1){
+      rightY = 0;
+      rightX = 0;
+    }
 
-    spin *= Math.PI;
+    if(Math.abs(leftX) <= 0.05) leftX = 0;
 
-    swerveDrive.setChassisSpeeds(new ChassisSpeeds(forward, left, spin));
-    //swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
   };
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //swerveDrive.setDriveSpeed(0);
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
   }
 
