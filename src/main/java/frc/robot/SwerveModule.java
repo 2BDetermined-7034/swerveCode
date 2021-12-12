@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.revrobotics.CANAnalog;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
@@ -32,6 +33,7 @@ public class SwerveModule {
     private final CANSparkMax spinMotor;
 
     private final CANAnalog spinAnalogEncoder;
+    private final CANEncoder spinRevEncoder;
     private final edu.wpi.first.wpilibj.controller.PIDController spinPIDController;
 
 
@@ -39,8 +41,9 @@ public class SwerveModule {
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         spinMotor = new CANSparkMax(spinMotorId, MotorType.kBrushless);
 
-
+        spinRevEncoder = spinMotor.getEncoder();
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
+        spinRevEncoder.setPositionConversionFactor(196/15);
         spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
 
         // TODO Velocity Conversion Factor
@@ -84,6 +87,16 @@ public class SwerveModule {
         spinPIDController.setI(kI);
         spinPIDController.setD(kD);
     }
+
+    /**
+     * @return new angle in 0 - 1.0
+     */
+    public double getScopedEncoderPos(){
+        double pos = spinRevEncoder.getPosition();
+        pos = pos % 360;
+        if (pos < 0) pos += 180;
+        return pos;
+    }
     /**
      * Set the motors to their desired position using a desired module state (speed and power)
      * @param state Your desired output vector of the robot
@@ -98,15 +111,25 @@ public class SwerveModule {
         }
           
         //This is where the wheel is 
-        double curROT = spinAnalogEncoder.getPosition();
-        //This is where we want to go
-        double ROT = state.angle.getDegrees() / 360;
-
-        double move = MathUtil.clamp(spinPIDController.calculate(curROT, ROT), -1, 1);
-
-
-        SmartDashboard.putNumber("move", move);
+        double curPos = spinAnalogEncoder.getPosition();
         double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+        SmartDashboard.putNumber("En", curPos);
+        SmartDashboard.putNumber("Alt en", getScopedEncoderPos());
+
+        //This is where we want to go
+        double pos = state.angle.getDegrees() / 360;
+        SmartDashboard.putNumber("POS", pos);
+        double delta = Math.abs(curPos - pos);
+        /*
+        if (delta > 0.25){
+            driveSpeed *= -1;
+            pos -= 0.5;
+        } 
+        */
+
+
+        double move = MathUtil.clamp(spinPIDController.calculate(curPos, pos), -1, 1);
+ 
         
         spinMotor.set(move);
         driveMotor.set(driveSpeed);
