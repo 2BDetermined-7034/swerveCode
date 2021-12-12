@@ -150,6 +150,8 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
 
+    backRight.debug();
+
 
     //Debug printings
     SmartDashboard.putNumber("rightY", rightY);
