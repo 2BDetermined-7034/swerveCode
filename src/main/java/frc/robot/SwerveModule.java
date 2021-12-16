@@ -135,14 +135,18 @@ public class SwerveModule {
 
         //This is where we want to go
         double pos = state.angle.getDegrees() / 360;
-        
+        SmartDashboard.putNumber("POS", pos);
         double delta = Math.abs(curPos - pos);
 
         
-        if (delta > 0.25){
+        if (delta > 0.25 && delta < 0.75){
             driveSpeed *= -1;
             pos -= 0.5;
         } 
+
+        SmartDashboard.putNumber("Cur Pos", curPos);
+        SmartDashboard.putNumber("MODDED POS", pos);
+        SmartDashboard.putNumber("Delta", delta);
         
 
 

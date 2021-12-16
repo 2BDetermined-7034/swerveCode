@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Robot;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -22,13 +23,18 @@ public class SwerveDriveCommand extends CommandBase {
   private final DoubleSupplier leftJoystickX;
   private final DoubleSupplier rightJoystickX;
   private final DoubleSupplier rightJoystickY;
+  private final DoubleSupplier leftJoystickTrigger;
+  private final DoubleSupplier rightJoystickTrigger;
 
-  public SwerveDriveCommand(SwerveDrive swerveDrive, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, DoubleSupplier rightJoystickY) {
+  public SwerveDriveCommand(SwerveDrive swerveDrive, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, DoubleSupplier rightJoystickY, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrive = swerveDrive;
     this.leftJoystickX = leftJoystickX;
     this.rightJoystickX = rightJoystickX;
     this.rightJoystickY = rightJoystickY;
+    this.leftJoystickTrigger = leftTrigger;
+    this.rightJoystickTrigger = rightTrigger;
+
     addRequirements(swerveDrive);
   }
 
@@ -44,6 +50,8 @@ public class SwerveDriveCommand extends CommandBase {
     double rightY = rightJoystickY.getAsDouble();
     double rightX = rightJoystickX.getAsDouble();
     double leftX = leftJoystickX.getAsDouble();
+    double leftTrig = leftJoystickTrigger.getAsDouble();
+    double rightTrig = rightJoystickTrigger.getAsDouble();
     
 
     if(Math.abs(rightY) <= 0.1 && Math.abs(rightX) <= 0.1){
@@ -51,9 +59,12 @@ public class SwerveDriveCommand extends CommandBase {
       rightX = 0;
     }
 
-    if(Math.abs(leftX) <= 0.05) leftX = 0;
+    if(Math.abs(leftX) <= 0.1) leftX = 0;
 
-    swerveDrive.setChassisSpeeds(new ChassisSpeeds(-rightY, -rightX, -leftX));
+    leftX += 0.2 * leftTrig - 0.2 * rightTrig;
+    leftX = MathUtil.clamp(leftX, -1, 1);
+
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
   };
 
   // Called once the command ends or is interrupted.

@@ -28,7 +28,7 @@ public class RobotContainer {
   //private final Joystick joystick = new Joystick(0);
   //private final JoystickButton button = new JoystickButton(joystick, 4);
 
-  private XboxController controller = new XboxController(5);
+  private XboxController controller = new XboxController(3);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -46,7 +46,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     ///button.whileHeld(new SwerveDriveCommand(swerveDrive, () -> joystick.getY() * -1));
-    swerveDrive.setDefaultCommand(new SwerveDriveCommand(swerveDrive, () -> controller.getX(Hand.kLeft) * -1, () -> controller.getX(Hand.kRight) * -1, () -> controller.getY(Hand.kRight) * -1));
+    swerveDrive.setDefaultCommand(new SwerveDriveCommand(swerveDrive, () -> controller.getX(Hand.kLeft) * -1, () -> controller.getX(Hand.kRight) * -1, () -> controller.getY(Hand.kRight) * -1,() -> controller.getTriggerAxis(Hand.kLeft),() -> controller.getTriggerAxis(Hand.kRight)));
     
   }
 
