@@ -31,7 +31,7 @@ public final class Constants {
 
 
         //Bigger number, smaller max speed
-        public static final double maxSpeed = 1.2;
+        public static final double maxSpeed = 4;
 
 
         //which direction (degrees) a module has to rotate to spin

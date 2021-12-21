@@ -25,8 +25,9 @@ public class SwerveDriveCommand extends CommandBase {
   private final DoubleSupplier rightJoystickY;
   private final DoubleSupplier leftJoystickTrigger;
   private final DoubleSupplier rightJoystickTrigger;
+  private final DoubleSupplier snap;
 
-  public SwerveDriveCommand(SwerveDrive swerveDrive, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, DoubleSupplier rightJoystickY, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger) {
+  public SwerveDriveCommand(SwerveDrive swerveDrive, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, DoubleSupplier rightJoystickY, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger, DoubleSupplier snap) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrive = swerveDrive;
     this.leftJoystickX = leftJoystickX;
@@ -34,6 +35,7 @@ public class SwerveDriveCommand extends CommandBase {
     this.rightJoystickY = rightJoystickY;
     this.leftJoystickTrigger = leftTrigger;
     this.rightJoystickTrigger = rightTrigger;
+    this.snap = snap;
 
     addRequirements(swerveDrive);
   }
@@ -52,6 +54,8 @@ public class SwerveDriveCommand extends CommandBase {
     double leftX = leftJoystickX.getAsDouble();
     double leftTrig = leftJoystickTrigger.getAsDouble();
     double rightTrig = rightJoystickTrigger.getAsDouble();
+    double snapDir = snap.getAsDouble();
+
     
 
     if(Math.abs(rightY) <= 0.1 && Math.abs(rightX) <= 0.1){

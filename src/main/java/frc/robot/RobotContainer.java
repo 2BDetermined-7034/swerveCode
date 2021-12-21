@@ -46,7 +46,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     ///button.whileHeld(new SwerveDriveCommand(swerveDrive, () -> joystick.getY() * -1));
-    swerveDrive.setDefaultCommand(new SwerveDriveCommand(swerveDrive, () -> controller.getX(Hand.kLeft) * -1, () -> controller.getX(Hand.kRight) * -1, () -> controller.getY(Hand.kRight) * -1,() -> controller.getTriggerAxis(Hand.kLeft),() -> controller.getTriggerAxis(Hand.kRight)));
+    swerveDrive.setDefaultCommand(new SwerveDriveCommand(swerveDrive, () -> controller.getX(Hand.kLeft) * -1, () -> controller.getX(Hand.kRight) * -1, () -> controller.getY(Hand.kRight) * -1,() -> controller.getTriggerAxis(Hand.kLeft),() -> controller.getTriggerAxis(Hand.kRight), () -> controller.getPOV()));
     
   }
 

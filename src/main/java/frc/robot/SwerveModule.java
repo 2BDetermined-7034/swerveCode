@@ -60,8 +60,8 @@ public class SwerveModule {
         //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
         spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
-        spinPIDController.setIntegratorRange(-0.005, 0.005);     
-
+        spinPIDController.setIntegratorRange(-0.5, 0.5);     
+    
 
     }
     public CANAnalog getSpinAnlogEncoder() {
@@ -105,7 +105,7 @@ public class SwerveModule {
 
         //pos = pos % 360;
         //if (pos < 0) pos += 180;
-        return pos;
+        return pos / 360;
     }
     /**
      * Set the motors to their desired position using a desired module state (speed and power)
@@ -129,7 +129,7 @@ public class SwerveModule {
         }
           
         //This is where the wheel is 
-        double curPos = getScopedEncoderPos() / 360;
+        double curPos = getScopedEncoderPos();
         double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
 
 
@@ -152,6 +152,7 @@ public class SwerveModule {
 
         double move = MathUtil.clamp(spinPIDController.calculate(curPos, pos), -1, 1);
  
+
         
         spinMotor.set(move);
         driveMotor.set(driveSpeed);
