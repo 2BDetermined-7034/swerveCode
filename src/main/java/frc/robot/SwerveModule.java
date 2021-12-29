@@ -15,10 +15,6 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
@@ -99,13 +95,15 @@ public class SwerveModule {
      */
     public double getScopedEncoderPos(){
         double pos = spinRevEncoder.getPosition();
-        pos *= 1350/49;
-        pos = Math.floorMod((int) pos, 360);
+        //Magic number comes from empirics, should be 13.0666...
+        pos *= 1/13.07389;
+        pos = (pos % 1 + 1) % 1;
+        //pos = Math.floorMod((int) pos, 1);
 
 
         //pos = pos % 360;
         //if (pos < 0) pos += 180;
-        return pos / 360;
+        return pos;/// 360;
     }
     /**
      * Set the motors to their desired position using a desired module state (speed and power)
@@ -113,9 +111,9 @@ public class SwerveModule {
      */
 
     public void debug(){
-        SmartDashboard.putNumber("aaaaaaa", spinRevEncoder.getPosition());
-        SmartDashboard.putNumber("En", spinAnalogEncoder.getPosition());
-        SmartDashboard.putNumber("Alt en", getScopedEncoderPos() / 360);
+        SmartDashboard.putNumber("BR revs from motor", spinRevEncoder.getPosition());
+        SmartDashboard.putNumber("BR pos from lamprey", spinAnalogEncoder.getPosition());
+        SmartDashboard.putNumber("Corrected BR", getScopedEncoderPos());
     }
 
 

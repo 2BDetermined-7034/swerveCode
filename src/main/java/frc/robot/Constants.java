@@ -29,9 +29,9 @@ public final class Constants {
         public static final int backLeftSpin = 6;
         public static final int backRightSpin = 4;
 
-
+        //170 RPM at max speed
         //Bigger number, smaller max speed
-        public static final double maxSpeed = 4;
+        public static final double maxSpeed = 7;
 
 
         //which direction (degrees) a module has to rotate to spin

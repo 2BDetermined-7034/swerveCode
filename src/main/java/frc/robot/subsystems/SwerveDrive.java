@@ -13,13 +13,8 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,7 +52,7 @@ public class SwerveDrive extends SubsystemBase {
             
     ahrs = new AHRS(SPI.Port.kMXP);
 
-    frontLeft.setSpinPIDConstants(, 0, 0);
+    frontLeft.setSpinPIDConstants(2, 0.002, 0);
     frontLeft.setSpinEncoderInverted(true);
     frontLeft.setDriveMotorInverted(true);
 
