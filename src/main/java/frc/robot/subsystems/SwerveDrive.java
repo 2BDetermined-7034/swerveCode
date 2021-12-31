@@ -1,5 +1,3 @@
-// 0.047 P Value
-
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -16,7 +14,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
@@ -145,31 +142,6 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
 
-    backRight.debug();
-
-
-    //Debug printings
-    SmartDashboard.putNumber("rightY", rightY);
-    SmartDashboard.putNumber("rightX", rightX);
-    SmartDashboard.putNumber("leftX", leftX);
-    SmartDashboard.putNumber("YAW", yaw);
-
-    SmartDashboard.putNumber("speedTranslation", speedTranslation);
-    SmartDashboard.putNumber("directionTranslation", directionTranslation);
-    SmartDashboard.putNumber("SpeedRotation", speedRotation);
-
-    SmartDashboard.putNumber("FR angle", frAngle);
-    SmartDashboard.putNumber("FR pow", frPow);
-
-    SmartDashboard.putNumber("BR angle", brAngle);
-    SmartDashboard.putNumber("BR pow", brPow);
-
-    SmartDashboard.putNumber("FL angle", flAngle);
-    SmartDashboard.putNumber("FL pow", flPow);
-
-    SmartDashboard.putNumber("BL angle", blAngle);
-    SmartDashboard.putNumber("BL pow", blPow);
-
   }
 
     /**
@@ -215,6 +187,5 @@ public class SwerveDrive extends SubsystemBase {
 
       return ret;
     }
-
 
 }

@@ -18,11 +18,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
-import frc.robot.subsystems.SwerveDrive;
 
-/**
- * Add your docs here.
- */
+
 public class SwerveModule {
 
     private final CANSparkMax driveMotor;
@@ -41,15 +38,6 @@ public class SwerveModule {
 
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
         
-
-        //spinRevEncoder.setPositionConversionFactor(196/15);
-        /*
-        spinRevEncoder.setPositionConversionFactor(196/15);
-        spinAnalogEncoder.setPositionConversionFactor(1 / 3.3);
-
-        */
-        // TODO Velocity Conversion Factor
-
         //NOTE: currently REVs PID controller doesn't support continous input, when they do, switch it to use the CANPIDcontroller
 
         //spinPIDController = spinMotor.getPIDController();
@@ -57,8 +45,6 @@ public class SwerveModule {
         spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
         spinPIDController.setIntegratorRange(-0.5, 0.5);     
-    
-
     }
     public CANAnalog getSpinAnlogEncoder() {
         return spinAnalogEncoder;
@@ -98,17 +84,9 @@ public class SwerveModule {
         //Magic number comes from empirics, should be 13.0666...
         pos *= 1/13.07389;
         pos = (pos % 1 + 1) % 1;
-        //pos = Math.floorMod((int) pos, 1);
 
-
-        //pos = pos % 360;
-        //if (pos < 0) pos += 180;
         return pos;/// 360;
     }
-    /**
-     * Set the motors to their desired position using a desired module state (speed and power)
-     * @param state Your desired output vector of the robot
-     */
 
     public void debug(){
         SmartDashboard.putNumber("BR revs from motor", spinRevEncoder.getPosition());
@@ -116,6 +94,10 @@ public class SwerveModule {
         SmartDashboard.putNumber("Corrected BR", getScopedEncoderPos());
     }
 
+    /**
+     * Set the motors to their desired position using a desired module state (speed and power)
+     * @param state Your desired output vector of the robot
+     */
 
     public void setModuleState(SwerveModuleState state) {
 
@@ -133,25 +115,15 @@ public class SwerveModule {
 
         //This is where we want to go
         double pos = state.angle.getDegrees() / 360;
-        SmartDashboard.putNumber("POS", pos);
         double delta = Math.abs(curPos - pos);
 
-        
         if (delta > 0.25 && delta < 0.75){
             driveSpeed *= -1;
             pos -= 0.5;
         } 
 
-        SmartDashboard.putNumber("Cur Pos", curPos);
-        SmartDashboard.putNumber("MODDED POS", pos);
-        SmartDashboard.putNumber("Delta", delta);
-        
-
-
         double move = MathUtil.clamp(spinPIDController.calculate(curPos, pos), -1, 1);
  
-
-        
         spinMotor.set(move);
         driveMotor.set(driveSpeed);
 

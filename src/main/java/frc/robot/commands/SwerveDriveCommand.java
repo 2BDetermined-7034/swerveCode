@@ -9,12 +9,9 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
-import frc.robot.Robot;
 import frc.robot.subsystems.SwerveDrive;
 
 public class SwerveDriveCommand extends CommandBase {
@@ -28,7 +25,7 @@ public class SwerveDriveCommand extends CommandBase {
   private final DoubleSupplier snap;
 
   public SwerveDriveCommand(SwerveDrive swerveDrive, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, DoubleSupplier rightJoystickY, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger, DoubleSupplier snap) {
-    // Use addRequirements() here to declare subsystem dependencies.
+
     this.swerveDrive = swerveDrive;
     this.leftJoystickX = leftJoystickX;
     this.rightJoystickX = rightJoystickX;
