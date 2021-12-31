@@ -9,9 +9,12 @@ import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.subsystems.SwerveDrive;
 
 public class SwerveAutoDrive extends CommandBase {
@@ -45,7 +48,8 @@ public class SwerveAutoDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    RamseteController ramseteController = new RamseteController();
+    //swerveDrive.setChassisSpeeds(ramseteController.calculate(currentPose, desiredState));
   }
 
   // Called once the command ends or is interrupted.
