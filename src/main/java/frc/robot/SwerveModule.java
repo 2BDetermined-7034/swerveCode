@@ -101,7 +101,7 @@ public class SwerveModule {
 
     public void setModuleState(SwerveModuleState state) {
 
-        //If the controller input is zero and we're at our setpoint, just stop 
+        //If the controller input is zero, and we're at our setpoint, just stop
         if(state.speedMetersPerSecond == 0 && spinPIDController.atSetpoint()) {
             driveMotor.set(0);
             spinMotor.set(0);

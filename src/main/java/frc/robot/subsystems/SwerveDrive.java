@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -19,16 +20,6 @@ import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
 public class SwerveDrive extends SubsystemBase {
-
-
-  /*
-    Common swerve drive errors and quick fixes:
-      - Issue:  one of the modules keeps slowly swivelying after use
-        - Fix: Re-zero encoder 
-      - Issue: Error CAN SPARK MAX TIMED OUT
-        - Fix: Make sure everything is plugged in 
-
-  */
 
   private final SwerveModule frontLeft;
   private final SwerveModule frontRight;
@@ -141,6 +132,8 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.setModuleState(states[1]);
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
+
+    SmartDashboard.putNumber("Nav", getCurrentAngle());
 
   }
 
