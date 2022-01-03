@@ -10,6 +10,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.subsystems.SwerveDrive;
@@ -34,7 +35,9 @@ public class SwerveDriveCommand extends CommandBase {
     this.leftJoystickTrigger = leftTrigger;
     this.rightJoystickTrigger = rightTrigger;
     this.snap = snap;
-    this.headingPID = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
+    this.headingPID = new edu.wpi.first.wpilibj.controller.PIDController(2, 0.001, 0);
+    headingPID.enableContinuousInput(-180, 180);
+
 
     addRequirements(swerveDrive);
   }
@@ -66,16 +69,19 @@ public class SwerveDriveCommand extends CommandBase {
     leftX += 0.2 * leftTrig - 0.2 * rightTrig;
     leftX = MathUtil.clamp(leftX, -1, 1);
 
+
     //Manage snap heading control
     if (snapDir != -1){
       if (snapDir > 180) snapDir -= 360;
-      snapDir *= -1;
+      SmartDashboard.putNumber("Snap", snapDir);
+      //snapDir *= -1;
 
-      leftX = headingPID.calculate(swerveDrive.getCurrentAngle(), snapDir);
+      leftX =  MathUtil.clamp(headingPID.calculate(swerveDrive.getCurrentAngle(), snapDir), -1, 1);
     }
+    SmartDashboard.putNumber("leftx", leftX);
 
-    swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
-  };
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(-rightY, -rightX, leftX));
+  }
 
   // Called once the command ends or is interrupted.
   @Override

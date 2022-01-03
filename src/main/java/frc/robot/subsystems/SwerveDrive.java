@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -136,6 +137,8 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.setModuleState(states[1]);
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
+
+    SmartDashboard.putNumber("Nav", getCurrentAngle());
 
   }
 
