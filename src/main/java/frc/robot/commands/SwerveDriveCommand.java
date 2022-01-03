@@ -29,16 +29,17 @@ public class SwerveDriveCommand extends CommandBase {
   public SwerveDriveCommand(SwerveDrive swerveDrive, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, DoubleSupplier rightJoystickY, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger, DoubleSupplier snap) {
 
     this.swerveDrive = swerveDrive;
+
     this.leftJoystickX = leftJoystickX;
     this.rightJoystickX = rightJoystickX;
     this.rightJoystickY = rightJoystickY;
     this.leftJoystickTrigger = leftTrigger;
     this.rightJoystickTrigger = rightTrigger;
     this.snap = snap;
+
     this.headingPID = new edu.wpi.first.wpilibj.controller.PIDController(2, 0.001, 0);
+
     headingPID.enableContinuousInput(-180, 180);
-
-
     addRequirements(swerveDrive);
   }
 
@@ -72,13 +73,15 @@ public class SwerveDriveCommand extends CommandBase {
 
     //Manage snap heading control
     if (snapDir != -1){
-      if (snapDir > 180) snapDir -= 360;
-      SmartDashboard.putNumber("Snap", snapDir);
-      //snapDir *= -1;
 
+      if (snapDir > 180) snapDir -= 360;
+      
+      SmartDashboard.putNumber("Snap", snapDir);
       leftX =  MathUtil.clamp(headingPID.calculate(swerveDrive.getCurrentAngle(), snapDir), -1, 1);
+
     }
     SmartDashboard.putNumber("leftx", leftX);
+    swerveDrive.debugNavX();
 
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(-rightY, -rightX, leftX));
   }

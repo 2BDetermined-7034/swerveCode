@@ -72,6 +72,13 @@ public class SwerveDrive extends SubsystemBase {
 
     return ang;
   }
+
+  /**
+   * Simple function to print NavX values
+   */
+  public void debugNavX(){
+    SmartDashboard.putNumber("NavX", getCurrentAngle());
+  }
   
   /**
    * Function to set the speeds of the drivebase
@@ -137,8 +144,6 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.setModuleState(states[1]);
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
-
-    SmartDashboard.putNumber("Nav", getCurrentAngle());
 
   }
 
