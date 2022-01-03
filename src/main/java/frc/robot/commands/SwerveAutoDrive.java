@@ -49,7 +49,7 @@ public class SwerveAutoDrive extends CommandBase {
   @Override
   public void execute() {
     RamseteController ramseteController = new RamseteController();
-    //swerveDrive.setChassisSpeeds(ramseteController.calculate(currentPose, desiredState));
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(0, 0, 1));
   }
 
   // Called once the command ends or is interrupted.

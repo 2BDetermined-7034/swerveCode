@@ -57,20 +57,26 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setDriveMotorInverted(true);
 
     speeds = new ChassisSpeeds(0, 0, 0);
+
   }
 
-  
+  /**
+   * A simple function that returns the NavX value scoped 
+   * @return NavX in range -180 to 180
+   */
   public double getCurrentAngle(){
     double ang = ahrs.getYaw();
-    //Converts to -180, 180 system
     if (ang > 180) ang -= 360;
-
     //flip yaw 
     ang *= -1;
 
     return ang;
   }
   
+  /**
+   * Function to set the speeds of the drivebase
+   * @param speeds (x translation -1 to 1, y translation -1 to 1, rotation -1 to 1)
+   */
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     this.speeds = speeds;
   }
@@ -78,8 +84,7 @@ public class SwerveDrive extends SubsystemBase {
   //I wish the person reading this a very nice day!
   @Override
   public void periodic(){
-    //A swerve module state has magnitude in m/s and angle in degrees(Technically rotation2d)
-    
+
     SwerveModuleState[] states = new SwerveModuleState[4];
 
     //Get robot yaw
@@ -97,7 +102,7 @@ public class SwerveDrive extends SubsystemBase {
     double blConstant = Constants.Swerve.blSpin;
 
 
-    double speedTranslation = MathUtil.clamp(Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2)), 0d, 1d);
+    double speedTranslation = MathUtil.clamp(Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2)), 0.0, 1.0);
     double directionTranslation = Math.toDegrees(Math.atan2(rightX, rightY));
     double speedRotation = -leftX;
 

@@ -108,21 +108,20 @@ public class SwerveModule {
             return;
         }
           
-        //This is where the wheel is 
         double curPos = getScopedEncoderPos();
         double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
 
 
         //This is where we want to go
-        double pos = state.angle.getDegrees() / 360;
-        double delta = Math.abs(curPos - pos);
+        double target = state.angle.getDegrees() / 360;
+        double delta = Math.abs(curPos - target);
 
         if (delta > 0.25 && delta < 0.75){
             driveSpeed *= -1;
-            pos -= 0.5;
+            target -= 0.5;
         } 
 
-        double move = MathUtil.clamp(spinPIDController.calculate(curPos, pos), -1, 1);
+        double move = MathUtil.clamp(spinPIDController.calculate(curPos, target), -1, 1);
  
         spinMotor.set(move);
         driveMotor.set(driveSpeed);
