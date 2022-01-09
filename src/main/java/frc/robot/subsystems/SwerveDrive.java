@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.SwerveModule;
+import frc.robot.*;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -27,6 +27,7 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveModule backRight;
 
   private ChassisSpeeds speeds;
+  private SwerveOdometry odometry;
 
   AHRS ahrs;
 
@@ -37,7 +38,9 @@ public class SwerveDrive extends SubsystemBase {
     frontRight = new SwerveModule(Constants.Swerve.frontRightDrive, Constants.Swerve.frontRightSpin);
     backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin);
     backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin);
-            
+
+    odometry = new SwerveOdometry(1, 1);
+
     ahrs = new AHRS(SPI.Port.kMXP);
 
     frontLeft.setSpinPIDConstants(2, 0.002, 0);
@@ -138,7 +141,8 @@ public class SwerveDrive extends SubsystemBase {
     states[2] = new SwerveModuleState(blPow, Rotation2d.fromDegrees(blAngle));
     //BR
     states[3] = new SwerveModuleState(brPow, Rotation2d.fromDegrees(brAngle));
-    
+
+    odometry.update(frPow, flPow, brPow, blPow, frAngle, flAngle, blAngle, brAngle);
 
     frontLeft.setModuleState(states[0]);
     frontRight.setModuleState(states[1]);

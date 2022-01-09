@@ -23,7 +23,7 @@ import frc.robot.subsystems.SwerveDrive;
 public class RobotContainer {
   private final SwerveDrive swerveDrive = new SwerveDrive();
   
-  private XboxController controller = new XboxController(3);
+  private final XboxController controller = new XboxController(3);
   private final Command swerveAuto;
 
   /**
@@ -48,7 +48,7 @@ public class RobotContainer {
       () -> controller.getY(Hand.kRight) * -1,
       () -> controller.getTriggerAxis(Hand.kLeft),
       () -> controller.getTriggerAxis(Hand.kRight),
-      () -> controller.getPOV())
+            controller::getPOV)
     );
   }
 

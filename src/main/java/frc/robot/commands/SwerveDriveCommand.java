@@ -36,7 +36,7 @@ public class SwerveDriveCommand extends CommandBase {
     this.leftJoystickTrigger = leftTrigger;
     this.rightJoystickTrigger = rightTrigger;
     this.snap = snap;
-    this.headingPID = new edu.wpi.first.wpilibj.controller.PIDController(1.2, 2.0, 0);
+    this.headingPID = new edu.wpi.first.wpilibj.controller.PIDController(3.2, 2.0, 0.01);
     headingPID.enableContinuousInput(-0.5, 0.5);
     addRequirements(swerveDrive);
   }
