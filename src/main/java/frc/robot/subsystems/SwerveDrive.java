@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.*;
+import frc.robot.subsystems.swerveUtils.SwerveModule;
+import frc.robot.subsystems.swerveUtils.SwerveOdometry;
 
 public class SwerveDrive extends SubsystemBase {
 

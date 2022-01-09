@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.*;
+import frc.robot.commands.swerveControls.SwerveDriveCommand;
+import frc.robot.commands.swerveControls.SwerveToPoint;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
