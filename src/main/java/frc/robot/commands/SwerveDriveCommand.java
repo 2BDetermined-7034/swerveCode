@@ -79,8 +79,6 @@ public class SwerveDriveCommand extends CommandBase {
 
       leftX =  MathUtil.clamp(headingPID.calculate(swerveDrive.getCurrentAngle() / 360, snapDir / 360), -1, 1);
 
-      //if (leftX < 0.01 && leftX > -0.01) leftX = 0;
-
     }
     SmartDashboard.putNumber("leftx", leftX);
     swerveDrive.debugNavX();

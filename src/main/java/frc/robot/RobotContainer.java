@@ -31,7 +31,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    swerveAuto = new SwerveAutoDrive(swerveDrive);
+    swerveAuto = new SwerveToPoint(swerveDrive, 1, 1,45);
     configureButtonBindings();
   }
 

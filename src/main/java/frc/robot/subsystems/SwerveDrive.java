@@ -27,7 +27,7 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveModule backRight;
 
   private ChassisSpeeds speeds;
-  private SwerveOdometry odometry;
+  private final SwerveOdometry odometry;
 
   AHRS ahrs;
 
@@ -90,7 +90,15 @@ public class SwerveDrive extends SubsystemBase {
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     this.speeds = speeds;
   }
-  
+
+  public double getPosAcross(){
+    return odometry.getPosAcrossField();
+  }
+
+  public double getPosAlong(){
+    return odometry.getPosAlongField();
+  }
+
   //I wish the person reading this a very nice day!
   @Override
   public void periodic(){
@@ -142,12 +150,15 @@ public class SwerveDrive extends SubsystemBase {
     //BR
     states[3] = new SwerveModuleState(brPow, Rotation2d.fromDegrees(brAngle));
 
-    odometry.update(frPow, flPow, brPow, blPow, frAngle, flAngle, blAngle, brAngle);
+    odometry.update(getCurrentAngle(), frPow, flPow, brPow, blPow, frAngle, flAngle, blAngle, brAngle);
 
     frontLeft.setModuleState(states[0]);
     frontRight.setModuleState(states[1]);
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
+
+    SmartDashboard.putNumber("X", odometry.getPosAcrossField());
+    SmartDashboard.putNumber("Y", odometry.getPosAlongField());
 
   }
 
