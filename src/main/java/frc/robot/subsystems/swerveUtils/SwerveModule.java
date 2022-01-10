@@ -9,9 +9,7 @@ package frc.robot.subsystems.swerveUtils;
 
 import com.revrobotics.CANAnalog;
 import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -39,10 +37,12 @@ public class SwerveModule {
 
         spinAnalogEncoder = spinMotor.getAnalog(AnalogMode.kAbsolute);
         
-        //NOTE: currently REVs PID controller doesn't support continous input, when they do, switch it to use the CANPIDcontroller
+        //NOTE: currently REVs PID controller doesn't support continuous input, when they do, switch it to use the CANPIDController
 
-        //spinPIDController = spinMotor.getPIDController();
-        //spinPIDController.setFeedbackDevice(spinAnalogEncoder);  
+        /*
+         spinPIDController = spinMotor.getPIDController();
+         spinPIDController.setFeedbackDevice(spinAnalogEncoder);
+         */
         spinPIDController = new edu.wpi.first.wpilibj.controller.PIDController(0.02, 0, 0, 0.02);
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
         spinPIDController.setIntegratorRange(-0.5, 0.5);     
@@ -86,7 +86,7 @@ public class SwerveModule {
         pos *= 1/13.07389;
         pos = (pos % 1 + 1) % 1;
 
-        return pos;/// 360;
+        return pos; // 360;
     }
 
     public void debug(){

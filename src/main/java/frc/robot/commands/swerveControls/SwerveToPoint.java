@@ -37,8 +37,8 @@ public class SwerveToPoint extends CommandBase {
     this.targetY = setY;
     this.targetHeading = setHeading;
 
-    this.headingPID = new PIDController(0.5, 0,1);
-    this.translationPID = new PIDController(0.5, 0 ,1);
+    this.headingPID = new PIDController(1.5, 0.1,1);
+    this.translationPID = new PIDController(1.5, 0.1 ,1);
 
     this.confidence = confidence;
     atPoint = false;
@@ -48,7 +48,7 @@ public class SwerveToPoint extends CommandBase {
   }
 
   public SwerveToPoint(SwerveDrive swerveDrive, double setX, double setY, double setHeading){
-    this(swerveDrive, setX, setY, setHeading, 0.1);
+    this(swerveDrive, setX, setY, setHeading, 0.01);
   }
 
   // Called when the command is initially scheduled.
@@ -62,8 +62,8 @@ public class SwerveToPoint extends CommandBase {
    */
   @Override
   public void execute() {
-    double rightX = MathUtil.clamp(translationPID.calculate(swerveDrive.getPosAcross(), targetX), -1, 1);
-    double rightY = MathUtil.clamp(translationPID.calculate(swerveDrive.getPosAlong(), targetY), -1, 1);
+    double rightX = MathUtil.clamp(translationPID.calculate(swerveDrive.getPosAlong(), targetX), -1, 1);
+    double rightY = MathUtil.clamp(translationPID.calculate(swerveDrive.getPosAcross(), targetY), -1, 1);
     double leftX = MathUtil.clamp(headingPID.calculate(swerveDrive.getCurrentAngle() / 360, targetHeading / 360), -1, 1);
     swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
     if (rightX <= confidence && rightY <= confidence && leftX <= confidence) atPoint = true;

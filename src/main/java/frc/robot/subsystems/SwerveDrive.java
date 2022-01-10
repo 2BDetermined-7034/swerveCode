@@ -40,7 +40,7 @@ public class SwerveDrive extends SubsystemBase {
     backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin);
     backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin);
 
-    odometry = new SwerveOdometry(1, 1);
+    odometry = new SwerveOdometry(0.45, 0.45);
 
     ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -92,6 +92,10 @@ public class SwerveDrive extends SubsystemBase {
     this.speeds = speeds;
   }
 
+  /**
+   * Function to get position from the drive base odometry
+   * @return meters across field position
+   */
   public double getPosAcross(){
     return odometry.getPosAcrossField();
   }
@@ -158,8 +162,8 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setModuleState(states[2]);
     backRight.setModuleState(states[3]);
 
-    SmartDashboard.putNumber("X", odometry.getPosAcrossField());
-    SmartDashboard.putNumber("Y", odometry.getPosAlongField());
+    SmartDashboard.putNumber("Across", odometry.getPosAcrossField());
+    SmartDashboard.putNumber("Along", odometry.getPosAlongField());
 
   }
 
