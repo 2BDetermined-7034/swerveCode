@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerveUtils;
 
 import java.lang.Math;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 
 public class SwerveOdometry {
 
@@ -82,8 +83,8 @@ public class SwerveOdometry {
         double STR2 = -ROT * (driveWidth / 2) + D;
         double STR = (STR1 + STR2) / 2;
 
-        double FWDN = FWD * Math.cos(Math.toRadians(heading)) + STR * Math.sin(Math.toRadians(heading));
-        double STRN = STR * Math.cos(Math.toRadians(heading)) - FWD * Math.sin(Math.toRadians(heading));
+        double FWDN = FWD * Math.cos(Math.toRadians(heading)) + STR * Math.sin(Math.toRadians(heading)) * Constants.Swerve.maxSpeed;
+        double STRN = STR * Math.cos(Math.toRadians(heading)) - FWD * Math.sin(Math.toRadians(heading)) * Constants.Swerve.maxSpeed;
 
         timeStep = loopTimer.get() - lastTime;
 

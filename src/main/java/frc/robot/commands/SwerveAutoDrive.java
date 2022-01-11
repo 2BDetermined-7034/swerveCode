@@ -17,9 +17,17 @@ public class SwerveAutoDrive extends SequentialCommandGroup {
 
   public SwerveAutoDrive(SwerveDrive swerveDrive) {
     addCommands(
-            new SwerveToPoint(swerveDrive, 1, 1, -180),
-            new WaitCommand(1),
-            new SwerveToPoint(swerveDrive, 0, 0, 0)
+            new SwerveToPoint(swerveDrive, 0, 0 ,0, 0.01),
+            new WaitCommand(0.5),
+            new SwerveToPoint(swerveDrive, 1.5, 0, 0, 0.01),
+            new WaitCommand(0.5),
+            new SwerveToPoint(swerveDrive, 1.5, 1.5, 0, 0.01),
+            new WaitCommand(0.5),
+            new SwerveToPoint(swerveDrive, 0, 1.5, 0, 0.01),
+            new WaitCommand(0.5),
+            new SwerveToPoint(swerveDrive, 0, 0, 0, 0.01)
+
+
     );
   }
 }

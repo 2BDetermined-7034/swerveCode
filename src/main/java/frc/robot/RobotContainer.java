@@ -28,12 +28,11 @@ public class RobotContainer {
   private final XboxController controller = new XboxController(3);
   private final Command swerveAuto;
 
-  /**
-   * The container for the robot.  Contains subsystems, OI devices, and commands.
-   */
+
   public RobotContainer() {
     // Configure the button bindings
-    swerveAuto = new SwerveToPoint(swerveDrive, -1, -0.5, 0);
+    //swerveAuto = new SwerveToPoint(swerveDrive, -1, -0.5, 0);
+    swerveAuto = new SwerveAutoDrive(swerveDrive);
     configureButtonBindings();
   }
 
@@ -62,6 +61,5 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return swerveAuto;
-    
   }
 }

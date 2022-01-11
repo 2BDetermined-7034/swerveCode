@@ -47,7 +47,7 @@ public class SwerveModule {
         spinPIDController.enableContinuousInput(-0.5, 0.5);  
         spinPIDController.setIntegratorRange(-0.5, 0.5);     
     }
-    public CANAnalog getSpinAnlogEncoder() {
+    public CANAnalog getSpinAnalogEncoder() {
         return spinAnalogEncoder;
     }
 
@@ -110,7 +110,7 @@ public class SwerveModule {
         }
           
         double curPos = getScopedEncoderPos();
-        double driveSpeed = state.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+        double driveSpeed = state.speedMetersPerSecond * Constants.Swerve.maxSpeed;
 
 
         //This is where we want to go
