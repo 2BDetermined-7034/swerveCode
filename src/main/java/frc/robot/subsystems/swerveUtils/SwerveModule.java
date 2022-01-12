@@ -83,7 +83,7 @@ public class SwerveModule {
     public double getScopedEncoderPos(){
         double pos = spinRevEncoder.getPosition();
         //Magic number comes from empirics, should be 13.0666...
-        pos *= 1/13.07389;
+        pos *= 1 / 13.07389;
         pos = (pos % 1 + 1) % 1;
 
         return pos; // 360;
@@ -128,7 +128,6 @@ public class SwerveModule {
         driveMotor.set(driveSpeed);
 
     }
-
 
 }
 

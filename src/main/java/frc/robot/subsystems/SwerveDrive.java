@@ -40,7 +40,7 @@ public class SwerveDrive extends SubsystemBase {
     backLeft = new SwerveModule(Constants.Swerve.backLeftDrive, Constants.Swerve.backLeftSpin);
     backRight = new SwerveModule(Constants.Swerve.backRightDrive, Constants.Swerve.backRightSpin);
 
-    odometry = new SwerveOdometry(0.45, 0.45);
+    odometry = new SwerveOdometry(Constants.Swerve.length, Constants.Swerve.width);
 
     ahrs = new AHRS(SPI.Port.kMXP);
 

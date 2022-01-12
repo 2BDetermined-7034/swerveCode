@@ -29,6 +29,7 @@ public class SwerveToPoint extends CommandBase {
    * @param setX the target x (meters away across field)
    * @param setY the target y (meters away along field)
    * @param setHeading the target heading (in degrees of the range 0 to -180/180)
+   * @param confidence at what speed do you cut off at (small = more confident)
    */
   public SwerveToPoint(SwerveDrive swerveDrive, double setX, double setY, double setHeading, double confidence) {
     this.swerveDrive = swerveDrive;

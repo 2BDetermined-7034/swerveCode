@@ -18,7 +18,10 @@ package frc.robot;
 public final class Constants {
 
     public static final class Swerve {
-        
+
+        public static final double length = 1;
+        public static final double width = 1;
+
         public static final int frontLeftDrive = 7;
         public static final int frontRightDrive = 1;
         public static final int backLeftDrive = 5;
@@ -30,8 +33,8 @@ public final class Constants {
         public static final int backRightSpin = 4;
 
         //170 RPM at max speed
+        // 0 - 1 range
         public static final double maxSpeed = 0.3;
-
 
         //which direction (degrees) a module has to rotate to spin
         public static final double frSpin = -135d;
