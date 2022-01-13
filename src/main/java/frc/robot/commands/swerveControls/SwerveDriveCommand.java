@@ -83,7 +83,7 @@ public class SwerveDriveCommand extends CommandBase {
     SmartDashboard.putNumber("leftx", leftX);
     swerveDrive.debugNavX();
 
-    swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, leftX));
+    swerveDrive.setChassisSpeeds(new ChassisSpeeds(rightY, rightX, -leftX));
   }
 
   // Called once the command ends or is interrupted.

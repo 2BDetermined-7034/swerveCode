@@ -19,8 +19,8 @@ public final class Constants {
 
     public static final class Swerve {
 
-        public static final double length = 1;
-        public static final double width = 1;
+        public static final double length = 0.6096;
+        public static final double width = 0.762;
 
         public static final int frontLeftDrive = 7;
         public static final int frontRightDrive = 1;
@@ -37,10 +37,10 @@ public final class Constants {
         public static final double maxSpeed = 0.3;
 
         //which direction (degrees) a module has to rotate to spin
-        public static final double frSpin = -135d;
-        public static final double brSpin = 135d;
-        public static final double blSpin = 45d;
-        public static final double flSpin = -45d;
+        public static final double frSpin = -127.65;
+        public static final double brSpin = 127.65;
+        public static final double blSpin = 52.35;
+        public static final double flSpin = -52.35;
 
     }
 

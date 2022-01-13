@@ -19,11 +19,11 @@ public class SwerveAutoDrive extends SequentialCommandGroup {
     addCommands(
             new SwerveToPoint(swerveDrive, 0, 0 ,0, 0.01),
             new WaitCommand(0.5),
-            new SwerveToPoint(swerveDrive, 1.5, 0, 0, 0.01),
+            new SwerveToPoint(swerveDrive, 2, 0, 0, 0.01),
             new WaitCommand(0.5),
-            new SwerveToPoint(swerveDrive, 1.5, 1.5, 0, 0.01),
+            new SwerveToPoint(swerveDrive, 2, 2, 0, 0.01),
             new WaitCommand(0.5),
-            new SwerveToPoint(swerveDrive, 0, 1.5, 0, 0.01),
+            new SwerveToPoint(swerveDrive, 0, 2, 0, 0.01),
             new WaitCommand(0.5),
             new SwerveToPoint(swerveDrive, 0, 0, 0, 0.01)
 

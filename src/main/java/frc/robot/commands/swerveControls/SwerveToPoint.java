@@ -39,7 +39,7 @@ public class SwerveToPoint extends CommandBase {
     this.targetHeading = setHeading;
 
     this.headingPID = new PIDController(0.5, 0.2,0);
-    this.translationPID = new PIDController(0.5, 0.2 ,0);
+    this.translationPID = new PIDController(0.3, 0.0 ,-0.0002);
 
     this.confidence = confidence;
     atPoint = false;
